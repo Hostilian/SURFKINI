@@ -144,9 +144,21 @@ public:
 	float CapsuleHalfHeight = 36.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Collision")
-	int32 MaxBumps = 3;                    // Max collision iterations per tick (PM_SlideMove bumps)
+	int32 MaxBumps = 3;                    	// --- Ground & Ramp Grace Timers ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
+	float CoyoteWindowDuration = 0.100f;   // 100ms coyote time window after leaving ramp edge
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
+	float SubtickJumpBufferDuration = 0.008f; // 8ms subtick jump buffer window
+
+	// --- Edge Smoothing ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ramp")
+	float FacetNormalSmoothingThresholdDegrees = 15.0f; // Max angle delta before smoothing ramp seam normal
 
 protected:
+	/** Smooths anomalous seam contact normals to prevent ramp edge snagging */
+	FVector SmoothFacetNormal(const FVector& CurrentNormal);
+
 	// ── Core Physics Methods ─────────────────────────────────────────
 
 	/**

@@ -257,25 +257,48 @@ FVector USurfMovementComponent::ApplyFriction(const FVector& InVelocity, float D
 //  ApplyGravity
 // ─────────────────────────────────────────────────────────────────────────────
 
-void USurfMovementComponent::ApplyGravity(float DeltaTime)
+FVector USurfMovementComponent::SmoothFacetNormal(const FVector& CurrentNormal)
 {
-	Velocity.Z -= Gravity * DeltaTime;
+	if (LastGroundNormal.IsNearlyZero()) return CurrentNormal;
+
+	const float Dot = FVector::DotProduct(LastGroundNormal, CurrentNormal);
+	const float AngleDegrees = FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(Dot, -1.0f, 1.0f)));
+
+	// If sudden seam angle disparity on non-walkable surf ramp, interpolate normal to prevent snagging
+	if (AngleDegrees > FacetNormalSmoothingThresholdDegrees && CurrentNormal.Z > 0.0f && CurrentNormal.Z < WalkableSlopeThreshold)
+	{
+		FVector Smoothed = (LastGroundNormal + CurrentNormal).GetSafeNormal();
+		return Smoothed;
+	}
+
+	return CurrentNormal;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  ProcessJump
-// ─────────────────────────────────────────────────────────────────────────────
+void USurfMovementComponent::RequestJump()
+{
+	bJumpRequested = true;
+	// Activate subtick jump buffer window
+	TimeSinceLastGrounded = 0.0f;
+}
 
 void USurfMovementComponent::ProcessJump()
 {
 	if (!bJumpRequested) return;
-	if (MoveState != ESurfMoveState::Grounded) return;
+
+	// Grounded OR within Coyote Window (100ms grace window after leaving ramp edge)
+	const bool bCanJump = (MoveState == ESurfMoveState::Grounded) || (TimeSinceLastGrounded <= CoyoteWindowDuration);
+
+	if (!bCanJump) return;
 
 	// Apply jump impulse
 	Velocity.Z = JumpForce;
-
-	// Immediately set airborne so surf tick picks up air accel
 	MoveState = ESurfMoveState::Airborne;
+	bJumpRequested = false;
+}
+
+void USurfMovementComponent::ApplyGravity(float DeltaTime)
+{
+	Velocity.Z -= Gravity * DeltaTime;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
