@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.4",
+	"EngineAssociation": "5.8",
 	"Category": "",
 	"Description": "SURFKINI — CS/Source-style surf FPS built in Unreal Engine 5",
 	"Modules": [
