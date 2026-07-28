@@ -6,6 +6,8 @@ public class SURFKINI : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		PublicIncludePaths.Add(ModuleDirectory);
+
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
@@ -17,6 +19,7 @@ public class SURFKINI : ModuleRules
 			"OnlineSubsystem",    // Multiplayer / matchmaking
 			"PhysicsCore",        // Physics queries for surf collision
 			"UMG",                // UI widgets (SpeedMeterWidget)
+			"AIModule",           // Behavior Trees and AIControllers
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

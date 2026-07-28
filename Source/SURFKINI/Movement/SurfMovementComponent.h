@@ -85,6 +85,9 @@ public:
 	ESurfMoveState GetMoveState() const { return MoveState; }
 
 	UFUNCTION(BlueprintPure, Category = "SurfMovement")
+	FVector GetVelocity() const { return Velocity; }
+
+	UFUNCTION(BlueprintPure, Category = "SurfMovement")
 	float GetHorizontalSpeed() const { return Velocity.Size2D(); }
 
 	UFUNCTION(BlueprintPure, Category = "SurfMovement")

@@ -20,7 +20,7 @@ void AWeaponBase::BeginPlay()
 void AWeaponBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOCKVAR_PROP(AWeaponBase, CurrentAmmo);
+	DOREPLIFETIME(AWeaponBase, CurrentAmmo);
 }
 
 void AWeaponBase::StartFire()

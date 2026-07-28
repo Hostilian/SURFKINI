@@ -39,11 +39,6 @@ void USurfMovementComponent::AddWishDirection(FVector WorldDirection, float Scal
 	AccumulatedWishDir += WorldDirection * ScaleValue;
 }
 
-void USurfMovementComponent::RequestJump()
-{
-	bJumpRequested = true;
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 //  Fixed-Tick Accumulator
 // ─────────────────────────────────────────────────────────────────────────────
