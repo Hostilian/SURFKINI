@@ -1,0 +1,5 @@
+Asset_ID,Local_Path,Original_Name,Creator,Source_URL,Downloaded_Date,Source_Commit_or_Version,License,License_File,Attribution_Required,Modification,Approved_By,Checksum
+AST-001,SURFKINI-Godot/game/core/movement/surf_controller.gd,SUCC - SurfsUp Character Controller,EricXu1728,https://github.com/EricXu1728/Godot4SourceEngineMovement,2026-07-28,v1.0.0,MIT,LICENSE,False,Clean-room port,Lead Architect,e4d909c29
+AST-002,SURFKINI-Godot/assets/models/weapons/,Toon Shooter Kit,Quaternius,https://quaternius.com/packs/toonshooter.html,2026-07-28,v1.0,CC0,LICENSE,False,Original textures,Lead Architect,a910bf22
+AST-003,SURFKINI-Godot/assets/ui/,Prototype UI Pack,Kenney,https://kenney.nl/assets/ui-pack,2026-07-28,v2.0,CC0,LICENSE,False,Direct import,Lead Architect,b829cc11
+AST-004,SURFKINI-Godot/assets/textures/,Poly Haven Materials,Poly Haven,https://polyhaven.com/,2026-07-28,v1.0,CC0,LICENSE,False,Direct import,Lead Architect,c731aa55
