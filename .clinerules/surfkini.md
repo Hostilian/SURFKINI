@@ -1,71 +1,36 @@
-# SURFKINI — Cline Memory Bank
-#
-# Cline re-reads this file at the start of every session.
-# Keep it current.
+# SURFKINI — AI Agent Operating Mandate & Code Adaptation Rules
 
-## Project Identity
+> **MANDATORY RULE FOR ALL AI AGENTS**:  
+> **NEVER WRITE CUSTOM CODE OR INVENT NEW ALGORITHMS FROM SCRATCH.**  
+> Every single feature, physics equation, networking structure, weapon recoil pattern, or UI component MUST be directly copied and adapted from established, published open-source repositories and verified math models on GitHub or Valve SDK source releases.
 
-- **Project**: SURFKINI — CS/Source-style surf FPS built in Unreal Engine 5
-- **Engine**: Unreal Engine 5.4 (C++ primary, Blueprints for prototyping)
-- **Language**: C++20 (UE-style), with Blueprint visual scripting
-- **Platform Targets**: Windows (primary), Linux dedicated server, potentially console
-- **Architecture Style**: See the big technical spec in the docs/ folder
+---
 
-## AI Toolchain (FCC)
+## 1. Primary Source Attribution Table
 
-- **FCC Server**: `http://127.0.0.1:8082` — must be running before using Cline
-- **Token**: `freecc`
-- **Models available**: NVIDIA NIM llama-3.3-70b, Groq, OpenRouter, Gemini, etc.
-- **Start server**: run `fcc-server.bat` or `Start-SURFKINI.ps1`
+All code modifications across modules MUST explicitly reference one of the following authoritative sources in top-of-file header comments:
 
-## Coding Rules for This Project
+| Feature / Domain | Required Open-Source Reference Baseline | Repository / Source URL |
+| :--- | :--- | :--- |
+| **Air-strafing & Surf Physics** | Valve Source SDK 2013 `gamemovement.cpp` (`PM_AirAccelerate`, `PM_ClipVelocity`) | `ValveSoftware/source-sdk-2013` |
+| **Godot/UE Clean Math Port** | Godot 4 Source Engine Movement (MIT) | `EricXu1728/Godot4SourceEngineMovement` |
+| **Client-Side Prediction & Rewind** | Fast-Paced Multiplayer Architecture | Gabriel Gambetta (gabrielgambetta.com/client-side-prediction.html) |
+| **UDP Socket Transport** | ENet Reliable UDP Networking Library | `lsquic` / `lsd/enet` |
+| **Weapon Recoil & Armor Math** | CS:GO Weapon Mechanics Tables & Armor Degradation Formula ($70/30$ ratio) | Valve CS:GO VPK dumps & Counter-Strike wiki specs |
+| **Mass Entity Crowd Surf** | UE5 MassEntity & MassMovement Engine Sample | `EpicGames/UnrealEngine` (Engine/Source/Runtime/MassEntity) |
+| **Surf HUD & Speedometer** | CS:GO SurfTimer / Momentum Mod HUD | `momentum-mod/game` |
 
-### Unreal Engine C++ Conventions
-- All classes must follow UE naming: `U` prefix for UObject, `A` for AActor, `F` for structs, `E` for enums
-- Use `UPROPERTY()`, `UFUNCTION()`, `UCLASS()` macros correctly
-- Never use `new` / `delete` directly — use `NewObject<T>()`, `SpawnActor<T>()`, `MakeShared<T>()`
-- All UObjects must be GC-safe (store in UPROPERTY or weak pointers)
-- Use `FVector`, `FRotator`, `FQuat` — never raw floats for transforms
+---
 
-### Movement Physics (Core Gameplay)
-- Air acceleration: Source/Quake-style (wish_direction dot velocity capping, not raw speed cap)
-- Ramp sliding: custom `ClipVelocity()` via `move_and_collide` loop, NOT Unreal's default `CharacterMovementComponent` slope handling
-- Physics tick: locked 60Hz in `TickComponent`, visual interpolation in separate `_process` equivalent
-- Surface threshold: `SurfaceNormal.Z >= 0.707` (cos 45°) for walkable vs slideable
+## 2. strict Implementation Guidelines
 
-### Architecture Rules
-- Movement logic lives in `Source/SURFKINI/Movement/` — NEVER in Blueprint
-- Do NOT modify `.uproject` file directly — let UBT manage it
-- Never hardcode paths — use `FPaths::ProjectDir()`, `FPaths::EngineDir()`
-- Server-authoritative: all physics runs on server, client predicts + reconciles
+1. **Direct Translation Only**:
+   - When porting `PM_ClipVelocity` or `PM_AirAccelerate`, copy the exact math logic variable for variable (`wishdir`, `wishspeed`, `currentspeed`, `addspeed`, `accel`, `overbounce = 1.001f`).
+   - Do NOT introduce custom drag or dampening multipliers that depart from the Source Engine standard.
 
-### File Organization
-```
-Source/SURFKINI/
-  Movement/          <- All surf physics code here
-  Weapons/           <- Weapon actors
-  Characters/        <- Player + NPC classes
-  AI/                <- Behavior trees, agent classes
-  UI/                <- HUD, menus
-  Net/               <- Networking, replication helpers
-Content/             <- Blueprints, assets (no logic here)
-```
+2. **No Invented APIs**:
+   - Use standard Unreal Engine 5 C++ classes (`UPawnMovementComponent`, `AAIController`, `UUserWidget`, `UCanvasPanel`).
+   - Do NOT invent fake macros or non-standard macros (e.g. use `DOREPLIFETIME` for Net replication).
 
-### What NOT to Do
-- Do NOT copy code from Valve's Source SDK 2013 — use clean-room reimplementation
-- Do NOT use `bhop3d` Godot repo (AGPL-3.0 — viral copyleft)
-- Do NOT put gameplay logic in Blueprints — prototype there, then port to C++
-- Do NOT commit `Binaries/`, `Intermediate/`, `Saved/`, `DerivedDataCache/` — they're gitignored
-
-## Current Status
-
-- [ ] UE5 project files generated
-- [ ] Movement base class scaffolded
-- [ ] FCC AI server connected
-
-## Key Technical Decisions
-
-- Custom kinematic movement loop (bypasses UCharacterMovementComponent)
-- Server-authoritative with client prediction + rollback
-- Mass AI framework for large NPC crowds
-- ENet for native, WebRTC for browser clients (if web export needed)
+3. **Verification Before Merging**:
+   - Every file change MUST pass compilation via `D:\GMS\UE_5.8\Engine\Build\BatchFiles\Build.bat SURFKINIEditor Win64 Development D:\CODING\SURFKINI\SURFKINI\SURFKINI.uproject`.

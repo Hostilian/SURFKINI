@@ -1,99 +1,119 @@
-# Master Copy-Paste Prompts for FCC Claude Parallel Agents (Smart Model Tier)
+# SURFKINI — Parallel Claude AI Prompts for isolated Git Worktrees
 
-> **Server Info**: FCC Proxy `http://127.0.0.1:8082` | Token: `freecc`
-> **Active Smart Models**: `Claude 3.5 Sonnet` / `DeepSeek-R1` / `DeepSeek V3` with reasoning enabled!
+> **CARDINAL RULE FOR ALL AGENTS**:  
+> **NEVER WRITE CUSTOM CODE FROM SCRATCH.** Copy and adapt all logic directly from established, published open-source GitHub projects (Valve Source SDK 2013, Godot4SourceEngineMovement, Gabriel Gambetta Multiplayer, ENet, CS:GO recoil tables).
 
 ---
 
-## 🟢 Terminal 1 Prompt: Movement Physics Specialist
+## 1. Agent 1: Movement & Surf Physics Specialist
+**Worktree Directory**: `D:\CODING\SURFKINI\surfkini-worktrees-movement`  
+**Target Files**: `Source/SURFKINI/Movement/SurfMovementComponent.h` & `.cpp`  
+**Primary Reference**: `ValveSoftware/source-sdk-2013` (`gamemovement.cpp`) & `EricXu1728/Godot4SourceEngineMovement`
 
 ```text
-You are the MOVEMENT PHYSICS SPECIALIST AGENT for SURFKINI (Unreal Engine 5.4 C++).
+You are the MOVEMENT PHYSICS SPECIALIST AGENT for SURFKINI (Unreal Engine 5.8 C++).
 
 Directory Scope: Source/SURFKINI/Movement/
 Context Rules: Read .clinerules/surfkini.md and .agents/agents/movement-physics-agent.md
 
-Task Objectives:
-1. Review Source/SURFKINI/Movement/SurfMovementComponent.h and SurfMovementReplicator.h.
-2. Implement subtick jump buffering (8ms window) in SurfMovementComponent to prevent dropped spacebar inputs on frame boundaries.
-3. Add coyote time (100ms grace window after leaving ground or ramp edges).
-4. Verify all vector arithmetic respects clean-room ClipVelocity (overbounce=1.001f, cos(45deg)=0.707f threshold).
-5. Ensure SurfMovementReplicator handles server authority verification and client prediction rollback cleanly.
+PRIMARY DIRECTIVE: DO NOT INVENT CODE FROM SCRATCH. Adapt exact physics equations from Valve Source SDK 2013 (gamemovement.cpp) and Godot4SourceEngineMovement.
 
-Do not edit files outside Source/SURFKINI/Movement/. Verify C++ code logic compiles cleanly.
+Task Objectives:
+1. Review Source/SURFKINI/Movement/SurfMovementComponent.h and SurfMovementComponent.cpp.
+2. Port PM_ClipVelocity (overbounce = 1.001f, cos(45deg) = 0.707f threshold) directly from Valve Source SDK 2013.
+3. Implement PM_AirAccelerate with perpendicular wish_direction strafe logic (30 ups cap).
+4. Implement subtick jump buffer (8ms window) and Coyote Time (100ms grace window).
+5. Verify C++ compiles cleanly via D:\GMS\UE_5.8\Engine\Build\BatchFiles\Build.bat SURFKINIEditor Win64 Development D:\CODING\SURFKINI\SURFKINI\SURFKINI.uproject.
 ```
 
 ---
 
-## 🔵 Terminal 2 Prompt: Weapons & Combat Specialist
+## 2. Agent 2: Weapons & Recoil Systems Specialist
+**Worktree Directory**: `D:\CODING\SURFKINI\surfkini-worktrees-weapons`  
+**Target Files**: `Source/SURFKINI/Weapons/WeaponBase.h`, `RifleWeapon.h`, `ProjectileWeapon.h`  
+**Primary Reference**: CS:GO Weapon Recoil Tables & Kevlar Armor Degradation Formulas
 
 ```text
-You are the WEAPONS & COMBAT SPECIALIST AGENT for SURFKINI (Unreal Engine 5.4 C++).
+You are the WEAPONS & COMBAT SPECIALIST AGENT for SURFKINI (Unreal Engine 5.8 C++).
 
 Directory Scope: Source/SURFKINI/Weapons/
 Context Rules: Read .clinerules/surfkini.md and .agents/agents/weapons-combat-agent.md
 
-Task Objectives:
-1. Review Source/SURFKINI/Weapons/WeaponBase.h and RifleWeapon.h.
-2. Implement ProjectileWeapon.h/.cpp for physics plasma projectile weapons.
-3. Enhance RifleWeapon with client-side line tracer particle prediction and server RPC hit validation.
-4. Implement CS-style armor damage calculations (100 HP + 100 Armor, 70% armor absorption ratio).
+PRIMARY DIRECTIVE: DO NOT INVENT CODE FROM SCRATCH. Adapt CS:GO weapon recoil decay tables and Kevlar 70/30 armor damage formulas directly from published CS:GO specifications.
 
-Do not edit files outside Source/SURFKINI/Weapons/.
+Task Objectives:
+1. Review Source/SURFKINI/Weapons/WeaponBase.h/.cpp, RifleWeapon.h/.cpp, ProjectileWeapon.h/.cpp.
+2. Implement 30-bullet AK-47 recoil spray curve with decay recovery formula.
+3. Implement Armor damage calculation (70% health, 30% armor deduction).
+4. Implement projectile prediction formula X(t) = X0 + V0*t + 0.5*a*t^2 for plasma launcher.
+5. Verify C++ compiles cleanly via Build.bat SURFKINIEditor Win64 Development.
 ```
 
 ---
 
-## 🟣 Terminal 3 Prompt: AI & Mass Entity Specialist
+## 3. Agent 3: Multiplayer & Networking Specialist
+**Worktree Directory**: `D:\CODING\SURFKINI\surfkini-worktrees-net`  
+**Target Files**: `Source/SURFKINI/Net/LagCompensator.h`, `SurfMovementReplicator.h`  
+**Primary Reference**: Gabriel Gambetta Multiplayer Architecture & ENet Reliable UDP
 
 ```text
-You are the AI & MASS ENTITY SPECIALIST AGENT for SURFKINI (Unreal Engine 5.4 C++).
-
-Directory Scope: Source/SURFKINI/AI/
-Context Rules: Read .clinerules/surfkini.md and .agents/agents/ai-mass-entity-agent.md
-
-Task Objectives:
-1. Review Source/SURFKINI/AI/SurfMassProcessor.h and SurfEnemyController.h.
-2. Expand SurfMassProcessor to process high-density NPC crowds (500+ entities) applying ClipVelocity surf movement.
-3. Wire SurfEnemyController with Behavior Tree tasks for strafe-shooting at moving players.
-4. Design ONNX neural network model loader interface for Macro-agent squad leader tactical AI.
-
-Do not edit files outside Source/SURFKINI/AI/.
-```
-
----
-
-## 🟡 Terminal 4 Prompt: Multiplayer & Net Specialist
-
-```text
-You are the MULTIPLAYER & NETWORKING SPECIALIST AGENT for SURFKINI (Unreal Engine 5.4 C++).
+You are the MULTIPLAYER & NETWORKING SPECIALIST AGENT for SURFKINI (Unreal Engine 5.8 C++).
 
 Directory Scope: Source/SURFKINI/Net/
 Context Rules: Read .clinerules/surfkini.md and .agents/agents/multiplayer-net-agent.md
 
-Task Objectives:
-1. Review Source/SURFKINI/Net/LagCompensator.h and LagCompensator.cpp.
-2. Expand LagCompensator to maintain a 1000ms ring buffer of historical player hitbox transforms.
-3. Implement hitbox rewind function to validate client fire timestamps on the server.
-4. Design ENet UDP socket transport wrapper for native server-client communication.
+PRIMARY DIRECTIVE: DO NOT INVENT CODE FROM SCRATCH. Adapt Gabriel Gambetta client-side prediction, server reconciliation, and 1000ms rewind ring buffer directly from published multiplayer netcode standards.
 
-Do not edit files outside Source/SURFKINI/Net/.
+Task Objectives:
+1. Review Source/SURFKINI/Net/LagCompensator.h/.cpp and SurfMovementReplicator.h/.cpp.
+2. Implement 1000ms ring buffer of historical player hitbox transforms.
+3. Implement server-authoritative hitbox rewind for hitscan validation.
+4. Implement delta compression for player movement transform replication.
+5. Verify C++ compiles cleanly via Build.bat SURFKINIEditor Win64 Development.
 ```
 
 ---
 
-## 🔴 Terminal 5 Prompt: UI & Speed HUD Specialist
+## 4. Agent 4: AI & Mass Entity Specialist
+**Worktree Directory**: `D:\CODING\SURFKINI\surfkini-worktrees-ai`  
+**Target Files**: `Source/SURFKINI/AI/SurfMassProcessor.h`, `SurfEnemyController.h`  
+**Primary Reference**: UE5 MassEntity & MassMovement Runtime Samples
 
 ```text
-You are the UI & HUD SPECIALIST AGENT for SURFKINI (Unreal Engine 5.4 C++).
+You are the AI & MASS ENTITY SPECIALIST AGENT for SURFKINI (Unreal Engine 5.8 C++).
 
-Directory Scope: Source/SURFKINI/UI/
-Context Rules: Read .clinerules/surfkini.md
+Directory Scope: Source/SURFKINI/AI/
+Context Rules: Read .clinerules/surfkini.md and .agents/agents/ai-mass-entity-agent.md
+
+PRIMARY DIRECTIVE: DO NOT INVENT CODE FROM SCRATCH. Adapt UE5 MassEntity crowd processing patterns and Behavior Tree AIController setups directly from published UE samples.
 
 Task Objectives:
-1. Review Source/SURFKINI/UI/SpeedMeterWidget.h and SURFKINIHud.h.
-2. Enhance SpeedMeterWidget with dynamic color-coded speed ranges (e.g. green for >1000 u/s).
-3. Update SURFKINIHud to render crosshair spread and speed overlay.
+1. Review Source/SURFKINI/AI/SurfMassProcessor.h/.cpp and SurfEnemyController.h/.cpp.
+2. Expand SurfMassProcessor to process 500+ NPC entities applying ClipVelocity surf movement.
+3. Setup Behavior Tree tasks for strafe-shooting while surfing.
+4. Setup LOD tick budgeter (60Hz near entities, 15Hz far entities).
+5. Verify C++ compiles cleanly via Build.bat SURFKINIEditor Win64 Development.
+```
 
-Do not edit files outside Source/SURFKINI/UI/.
+---
+
+## 5. Agent 5: UI & Speedometer Specialist
+**Worktree Directory**: `D:\CODING\SURFKINI\surfkini-worktrees-ui`  
+**Target Files**: `Source/SURFKINI/UI/SpeedMeterWidget.h`, `SURFKINIHud.h`  
+**Primary Reference**: CS:GO SurfTimer & Momentum Mod HUD Layouts
+
+```text
+You are the UI & HUD SPECIALIST AGENT for SURFKINI (Unreal Engine 5.8 C++).
+
+Directory Scope: Source/SURFKINI/UI/
+Context Rules: Read .clinerules/surfkini.md and .agents/agents/ui-hud-agent.md
+
+PRIMARY DIRECTIVE: DO NOT INVENT CODE FROM SCRATCH. Adapt Momentum Mod / SurfTimer HUD layouts and dynamic crosshair expansion directly from CS:GO community UI standards.
+
+Task Objectives:
+1. Review Source/SURFKINI/UI/SpeedMeterWidget.h/.cpp and SURFKINIHud.h/.cpp.
+2. Implement real-time u/s speedometer widget with color-coded speed tiers (green at > 1000 u/s).
+3. Implement dynamic crosshair canvas drawing with spread and speed expansion.
+4. Implement Killfeed notification stack with headshot badges.
+5. Verify C++ compiles cleanly via Build.bat SURFKINIEditor Win64 Development.
 ```
