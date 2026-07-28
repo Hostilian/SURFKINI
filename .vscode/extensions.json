@@ -1,0 +1,34 @@
+{
+    "recommendations": [
+        // --- C++ (required for UE development) ---
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+
+        // --- AI Coding Assistant (connects to your FCC server) ---
+        // Cline: set base URL = http://127.0.0.1:8082, token = freecc
+        "saoudrizwan.claude-dev",
+
+        // --- CMake & Build Tools ---
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+
+        // --- Debugging ---
+        "vadimcn.vscode-lldb",
+
+        // --- Git & Version Control ---
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+
+        // --- Code Quality ---
+        "ms-vscode.vscode-clang-format",
+        "streetsidesoftware.code-spell-checker",
+
+        // --- Unreal Engine specific helpers ---
+        "UnrealEngineAtPurdue.ue4-snippet-pack",
+        "theluk.unreal-code-snippets"
+    ],
+    "unwantedRecommendations": [
+        // These conflict with the MSVC toolchain used by UE
+        "ms-dotnettools.csharp"
+    ]
+}

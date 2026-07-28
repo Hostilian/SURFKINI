@@ -1,0 +1,59 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+
+    // --- C++ (Unreal Engine style) ---
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.default.intelliSenseMode": "windows-msvc-x64",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: ForContinuationAndIndentation, BreakBeforeBraces: Allman, ColumnLimit: 120 }",
+
+    // --- File Watcher: exclude heavy UE folders ---
+    "files.watcherExclude": {
+        "**/Binaries/**": true,
+        "**/Intermediate/**": true,
+        "**/Saved/**": true,
+        "**/DerivedDataCache/**": true,
+        "**/.vs/**": true,
+        "**/Build/**": true,
+        "**/node_modules/**": true,
+        "**/target/**": true
+    },
+
+    // --- Explorer: hide generated folders ---
+    "files.exclude": {
+        "**/Binaries": true,
+        "**/Intermediate": true,
+        "**/DerivedDataCache": true,
+        "**/.vs": true,
+        "**/*.sln": false,
+        "**/*.vcxproj": false
+    },
+
+    // --- Search: exclude heavy folders ---
+    "search.exclude": {
+        "**/Binaries/**": true,
+        "**/Intermediate/**": true,
+        "**/Saved/**": true,
+        "**/DerivedDataCache/**": true,
+        "**/node_modules/**": true
+    },
+
+    // --- Cline AI (FCC Proxy) ---
+    // After installing the Cline extension (saoudrizwan.claude-dev):
+    // Open Cline settings and set:
+    //   API Provider: OpenAI Compatible
+    //   Base URL:     http://127.0.0.1:8082
+    //   API Key:      freecc
+    //   Model:        claude-3-5-sonnet-20241022  (or any model from FCC catalog)
+
+    // --- Terminal ---
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.scrollback": 5000,
+
+    // --- Git ---
+    "git.ignoreLimitWarning": true
+}

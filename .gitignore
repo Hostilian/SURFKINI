@@ -1,0 +1,72 @@
+# Unreal Engine 5 — Standard .gitignore for SURFKINI
+# Generated folders (rebuilt by UBT/editor — never commit these)
+
+# ----- Compiled / Build Output -----
+Binaries/
+Build/
+Intermediate/
+DerivedDataCache/
+
+# ----- Editor Generated -----
+Saved/
+.vs/
+*.sln
+*.suo
+*.user
+*.VC.db
+*.VC.VC.opendb
+
+# ----- Visual Studio -----
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# ----- Unreal Logs -----
+Saved/Logs/
+Saved/Crashes/
+Saved/StagedBuilds/
+
+# ----- OS Files -----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----- IDE -----
+.idea/
+*.swp
+*.swo
+*~
+
+# ----- Python / Scripts -----
+__pycache__/
+*.pyc
+.venv/
+
+# ----- Node (if any tooling) -----
+node_modules/
+
+# ----- Secrets (never commit) -----
+.env
+.env.local
+*.key
+*.pem
+
+# ----- FCC Server Cache -----
+.fcc-cache/
+
+# =========================================================
+# DO commit:
+#   Source/          <- All C++ code
+#   Content/         <- Assets (or use Git LFS for large files)
+#   Config/          <- Engine config files
+#   Plugins/         <- Plugin source
+#   *.uproject       <- Project descriptor
+#   .vscode/         <- VS Code config (this repo)
+#   .clinerules/     <- Cline AI rules
+# =========================================================
+
+# --- Git LFS (recommended for large binary assets) ---
+# Run: git lfs install
+# Then: git lfs track "Content/**/*.uasset"
+#       git lfs track "Content/**/*.umap"
+# This keeps binary UE assets out of regular git history

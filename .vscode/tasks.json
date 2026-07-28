@@ -1,0 +1,128 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // -------------------------------------------------------
+            // PRIMARY BUILD: Development Editor (use this during dev)
+            // Ctrl+Shift+B to run default build task
+            // -------------------------------------------------------
+            "label": "Build (Development Editor)",
+            "type": "shell",
+            "command": "C:/Program Files/Epic Games/UE_5.4/Engine/Build/BatchFiles/Build.bat",
+            "args": [
+                "SURFKINIEditor",
+                "Win64",
+                "Development",
+                "${workspaceFolder}/SURFKINI.uproject",
+                "-waitmutex"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            // -------------------------------------------------------
+            // SHIPPING BUILD: Final release / packaged game
+            // -------------------------------------------------------
+            "label": "Build (Shipping)",
+            "type": "shell",
+            "command": "C:/Program Files/Epic Games/UE_5.4/Engine/Build/BatchFiles/Build.bat",
+            "args": [
+                "SURFKINI",
+                "Win64",
+                "Shipping",
+                "${workspaceFolder}/SURFKINI.uproject",
+                "-waitmutex"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            // -------------------------------------------------------
+            // GENERATE PROJECT FILES
+            // Run this whenever you add/remove .cpp or .h files
+            // -------------------------------------------------------
+            "label": "Generate Project Files",
+            "type": "shell",
+            "command": "C:/Program Files/Epic Games/UE_5.4/Engine/Build/BatchFiles/GenerateProjectFiles.bat",
+            "args": [
+                "${workspaceFolder}/SURFKINI.uproject",
+                "-Game",
+                "-VSCode"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            // -------------------------------------------------------
+            // CLEAN BUILD
+            // -------------------------------------------------------
+            "label": "Clean (Development Editor)",
+            "type": "shell",
+            "command": "C:/Program Files/Epic Games/UE_5.4/Engine/Build/BatchFiles/Build.bat",
+            "args": [
+                "SURFKINIEditor",
+                "Win64",
+                "Development",
+                "${workspaceFolder}/SURFKINI.uproject",
+                "-clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            // -------------------------------------------------------
+            // START FCC AI SERVER
+            // Run this before using Cline/Claude Code
+            // -------------------------------------------------------
+            "label": "Start FCC AI Server",
+            "type": "shell",
+            "command": "${workspaceFolder}/fcc-server.bat",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            // -------------------------------------------------------
+            // RUN EDITOR (without VS attached debugger)
+            // -------------------------------------------------------
+            "label": "Run Unreal Editor",
+            "type": "shell",
+            "command": "C:/Program Files/Epic Games/UE_5.4/Engine/Binaries/Win64/UnrealEditor.exe",
+            "args": [
+                "${workspaceFolder}/SURFKINI.uproject"
+            ],
+            "group": "none",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
