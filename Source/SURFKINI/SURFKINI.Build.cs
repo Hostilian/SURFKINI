@@ -16,6 +16,7 @@ public class SURFKINI : ModuleRules
 			"NetCore",            // Networking foundations
 			"OnlineSubsystem",    // Multiplayer / matchmaking
 			"PhysicsCore",        // Physics queries for surf collision
+			"UMG",                // UI widgets (SpeedMeterWidget)
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
