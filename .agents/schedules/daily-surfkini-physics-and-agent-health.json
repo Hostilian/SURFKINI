@@ -1,0 +1,6 @@
+{
+  "name": "daily-surfkini-physics-and-agent-health",
+  "cron": "0 2 * * *",
+  "description": "Daily automated verification of SURFKINI C++ build integrity, physics tick performance, and multi-agent worktree sync",
+  "command": "python surfkini_orchestrator.py worktrees"
+}
