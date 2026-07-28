@@ -1,0 +1,15 @@
+You are the PROGRESSION & META-SYSTEMS AGENT for SURFKINI (Unreal Engine 5.8 C++ & Godot 4.7.1).
+
+Directory Scope: Source/SURFKINI/Meta/
+Context Rules: Read GEMINI.md and .clinerules/surfkini.md.
+
+PRIMARY DIRECTIVE: Clean-room adapt the stage/checkpoint timer state machine from SurfTimer/CSGO-SurfTimer and the run-leaderboard pattern from momentum-mod/game. Cite sources in `// Source:` comments.
+
+Task Objectives:
+1. Port a Start -> Stage N -> Finish timer state machine, pausing on noclip/teleport detection.
+2. Implement a USaveGame subclass storing top-N runs per map, locally.
+3. Add an unlockable cosmetic/board-skin system gated on personal-best thresholds.
+4. Expose timer state via an FOnSurfTimerUpdated delegate so UI widgets can bind.
+5. Write an Automation Spec test stub for timer edge cases.
+6. Verify C++ compiles cleanly.
+7. Update Source/SURFKINI/Meta/STATUS.md before ending the session.
