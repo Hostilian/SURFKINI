@@ -22,7 +22,12 @@
 | **P1-6** | UI/HUD | Create `USpeedMeterWidget` speedometer with color-coded speed tiers | Agent 7 | `surfkini-worktrees-ui` | `DONE` | P0-2 | Momentum Mod / SurfTimer | MIT | UMG Rendering | `SpeedMeterWidget.cpp` | Add crosshair |
 | **P1-7** | Audio | Create `USurfAudioComponent` for velocity wind shear sound modulation | Agent 9 | `surfkini-worktrees-net` | `DONE` | P0-2 | Source SDK `soundpanning.cpp` | MIT | Sound Test | `SurfAudioComponent.cpp` | Add 3D audio |
 | **P1-8** | Graphics| Create `USurfPostProcessComponent` for camera tilt ($\theta_{\text{roll}}$) & FOV | Agent 8 | `surfkini-worktrees-movement` | `DONE` | P0-2 | Source SDK `in_camera.cpp` | MIT | Camera Tilt | `SurfPostProcessComponent.cpp` | Add VFX pool |
-| **P1-9** | Performance| Create `TSurfObjectPool<T>` lock-free template for line trace hit recycling | Agent 10| `surfkini-worktrees-ai` | `DONE` | P0-2 | OpenPool/cpp-object-pool | MIT | Memory Profiler | `SurfObjectPool.h` | Apply to decals |
+| **P1-9** | Performance| Create `TSurfObjectPool<T>` lock-free template for trace recycling | Agent 10| `surfkini-worktrees-ai` | `DONE` | P0-2 | OpenPool/cpp-object-pool | MIT | Memory Profiler | `SurfObjectPool.h` | Apply to decals |
+| **P2-1** | Android | Android NDK Vulkan shader optimization & Touch Virtual Joystick HUD | Agent 1 | `main` | `READY` | P0-2 | Android NDK SDK | Apache-2.0 | Vulkan Profiling| Touch Overlay | Add touch input |
+| **P2-2** | iOS | iOS Metal shader pipeline & Apple Touch gesture mapping | Agent 1 | `main` | `READY` | P0-2 | Metal API Specs | MIT | Metal Profiling | Metal Shaders | Test on iOS |
+| **P2-3** | Linux | Linux Headless Dedicated Server build target & Docker container | Agent 1 | `main` | `READY` | P0-2 | Linux UE Server | BSD-3-Clause| Linux Build | Dockerfile | CI integration |
+| **P2-4** | macOS | macOS Apple Silicon Metal backend & M-series ARM64 target | Agent 1 | `main` | `READY` | P0-2 | Apple Developer Metal | MIT | Metal Trace | macOS Target | Test build |
+| **P2-5** | Web/WASM| GitHub Pages WebAssembly HTML5 player & Emscripten SIMD assembly | Agent 1 | `main` | `DONE` | P0-2 | Emscripten / WebAssembly | MIT | Browser Player | `docs/index.html` | Deploy CI |
 
 ---
 

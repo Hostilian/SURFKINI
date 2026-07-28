@@ -1,8 +1,8 @@
 {
 	"FileVersion": 3,
 	"EngineAssociation": "5.8",
-	"Category": "",
-	"Description": "SURFKINI — CS/Source-style surf FPS built in Unreal Engine 5",
+	"Category": "Games",
+	"Description": "SURFKINI — CS/Source-style surf FPS built in Unreal Engine 5 (Cross-Platform Windows, Linux, Mac, Android, iOS, WASM Assembly)",
 	"Modules": [
 		{
 			"Name": "SURFKINI",
@@ -21,5 +21,13 @@
 				"Editor"
 			]
 		}
+	],
+	"TargetPlatforms": [
+		"Windows",
+		"Linux",
+		"Mac",
+		"Android",
+		"IOS",
+		"HTML5"
 	]
 }
