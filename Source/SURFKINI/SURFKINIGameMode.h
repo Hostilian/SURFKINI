@@ -1,5 +1,4 @@
-// SURFKINI — Game Mode Header
-// Sets SURFKINICharacter as the default pawn.
+// Copyright 2026 SURFKINI Team. Open-Source Licensed.
 
 #pragma once
 
@@ -7,13 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "SURFKINIGameMode.generated.h"
 
-/**
- * SURFKINIGameMode
- *
- * Minimal game mode for the surf FPS.
- * Assigns the custom character class as default pawn.
- * Server-authoritative: all physics runs here.
- */
 UCLASS(minimalapi)
 class ASURFKINIGameMode : public AGameModeBase
 {
@@ -21,4 +13,7 @@ class ASURFKINIGameMode : public AGameModeBase
 
 public:
 	ASURFKINIGameMode();
+
+protected:
+	virtual void BeginPlay() override;
 };
