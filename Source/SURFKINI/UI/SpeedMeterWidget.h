@@ -26,6 +26,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SURFKINI|UI")
 	float GetHorizontalSpeed() const;
 
+	/** Returns color-coded linear color for speedometer tiers (Blue < 500, Yellow 500-1500, Green > 1500 u/s) */
+	UFUNCTION(BlueprintPure, Category = "SURFKINI|UI")
+	FLinearColor GetSpeedTierColor() const;
+
 	/** Target surf movement component reference */
 	UPROPERTY(BlueprintReadWrite, Category = "SURFKINI|UI", meta = (ExposeOnSpawn = true))
 	USurfMovementComponent* SurfMovement;

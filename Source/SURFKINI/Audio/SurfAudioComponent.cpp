@@ -6,7 +6,7 @@
 
 USurfAudioComponent::USurfAudioComponent()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void USurfAudioComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

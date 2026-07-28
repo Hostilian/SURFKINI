@@ -7,7 +7,7 @@
 
 USurfPostProcessComponent::USurfPostProcessComponent()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void USurfPostProcessComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
