@@ -236,9 +236,6 @@ protected:
 	ESurfMoveState MoveState = ESurfMoveState::Airborne;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "SurfMovement|Debug")
-	FVector Velocity = FVector::ZeroVector;
-
-	UPROPERTY(VisibleInstanceOnly, Category = "SurfMovement|Debug")
 	FVector LastGroundNormal = FVector::UpVector;
 
 	UPROPERTY(VisibleInstanceOnly, Category = "SurfMovement|Debug")
