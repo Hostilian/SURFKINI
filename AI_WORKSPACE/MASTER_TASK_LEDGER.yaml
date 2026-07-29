@@ -1,0 +1,73 @@
+version: "5.0.0"
+last_updated: "2026-07-29T22:25:00Z"
+tasks:
+  - id: "AUD-101"
+    title: "Reality Audit & Build Baseline Discovery"
+    agent: "Agent A (Auditor)"
+    status: "DONE"
+    tests: ["surfkini_orchestrator.py doctor"]
+  - id: "LIC-101"
+    title: "Research Gate & Open-Source Licence Classifier"
+    agent: "Agent B (Research)"
+    status: "DONE"
+    tests: ["tools/research_gate.py"]
+  - id: "MOV-101"
+    title: "Source Surf Physics & Kinetic Wall Damage"
+    agent: "Agent C (Movement)"
+    status: "DONE"
+    tests: ["test_kinetic_wall_damage"]
+  - id: "PRK-101"
+    title: "Wall-Running, Vaulting & Ledge Mantling"
+    agent: "Agent D (Parkour)"
+    status: "DONE"
+    tests: ["test_parkour_wall_run"]
+  - id: "CAM-101"
+    title: "Dual FPP/TPP Camera SpringArm System"
+    agent: "Agent E (Camera)"
+    status: "DONE"
+    tests: ["In-Game V Key Toggle"]
+  - id: "WPN-101"
+    title: "AK-47 Recoil, 70/30 Armor & Gear System"
+    agent: "Agent F (Weapons)"
+    status: "DONE"
+    tests: ["test_gear_loadout_modifiers"]
+  - id: "NET-101"
+    title: "Lag Compensation 1000ms Rewind Buffer"
+    agent: "Agent G (Networking)"
+    status: "DONE"
+    tests: ["test_lag_compensation_rewind"]
+  - id: "SRV-101"
+    title: "128 Tickrate Dedicated Server & Browser"
+    agent: "Agent H (Server)"
+    status: "DONE"
+    tests: ["test_dedicated_server_tickrates"]
+  - id: "MAP-101"
+    title: "Runtime Level Editor & JSON Exporter"
+    agent: "Agent I (Map Builder)"
+    status: "DONE"
+    tests: ["test_level_editor_grid_snap"]
+  - id: "UGC-101"
+    title: "Steam Workshop API Publishing & Downloads"
+    agent: "Agent J (Workshop)"
+    status: "SCAFFOLDED"
+    tests: ["C++ API Wrappers"]
+  - id: "MOD-101"
+    title: "Tier 1 Data Mod & Ruleset Manifests"
+    agent: "Agent K (Modding)"
+    status: "DONE"
+    tests: ["ValidateModManifest"]
+  - id: "UI-101"
+    title: "Competitive Speedometer & Strafe-Sync HUD"
+    agent: "Agent L (UI/UX)"
+    status: "DONE"
+    tests: ["test_hud_speedometer_render"]
+  - id: "QA-101"
+    title: "18-Suite Automated Unit Test Runner"
+    agent: "Agent M (QA)"
+    status: "DONE"
+    tests: ["run_tests.py v9.0.0"]
+  - id: "INT-101"
+    title: "Multi-Agent Swarm Dispatch & PR Manager"
+    agent: "Agent N (Integration)"
+    status: "DONE"
+    tests: ["surfkini_orchestrator.py status"]
