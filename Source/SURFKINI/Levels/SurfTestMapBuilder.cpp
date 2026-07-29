@@ -49,11 +49,12 @@ void ASurfTestMapBuilder::ConstructEnvironmentLighting()
 
 	// Spawn Ambient Sky Light
 	ASkyLight* SkyLight = World->SpawnActor<ASkyLight>(FVector(0.0f, 0.0f, 1200.0f), FRotator::ZeroRotator);
-	if (SkyLight && SkyLight->GetSkyLightComponent())
+	if (SkyLight && SkyLight->GetLightComponent())
 	{
-		SkyLight->GetSkyLightComponent()->SetIntensity(1.0f);
-		SkyLight->GetSkyLightComponent()->SetLightColor(FLinearColor(0.6f, 0.8f, 1.0f));
+		SkyLight->GetLightComponent()->SetIntensity(1.0f);
+		SkyLight->GetLightComponent()->SetLightColor(FLinearColor(0.6f, 0.8f, 1.0f));
 	}
+
 }
 
 void ASurfTestMapBuilder::ConstructSpawnPlatform()

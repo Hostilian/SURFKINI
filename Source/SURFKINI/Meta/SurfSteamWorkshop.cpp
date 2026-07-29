@@ -12,7 +12,7 @@ bool USurfSteamWorkshop::PublishMapToWorkshop(FString MapFilePath, FString Title
 	return !MapFilePath.IsEmpty() && !Title.IsEmpty();
 }
 
-bool USurfSteamWorkshop::DownloadWorkshopMap(uint64 WorkshopFileId)
+bool USurfSteamWorkshop::DownloadWorkshopMap(int64 WorkshopFileId)
 {
 	// Steamworks DownloadItem integration point
 	return WorkshopFileId > 0;

@@ -38,8 +38,9 @@ FString ASurfRuntimeLevelEditor::ExportMapToJson() const
 			TEXT("    { \"type\": \"%s\", \"pos\": [%.1f, %.1f, %.1f], \"rot\": [%.1f, %.1f, %.1f] }%s\n"),
 			*Obj.ObjectType, Obj.Location.X, Obj.Location.Y, Obj.Location.Z,
 			Obj.Rotation.Pitch, Obj.Rotation.Yaw, Obj.Rotation.Roll,
-			(i == PlacedObjects.Num() - 1) ? "" : ","
+			(i == PlacedObjects.Num() - 1) ? TEXT("") : TEXT(",")
 		);
+
 	}
 	JsonOutput += "  ]\n}";
 	return JsonOutput;

@@ -18,5 +18,5 @@ public:
 	bool PublishMapToWorkshop(FString MapFilePath, FString Title, FString Description);
 
 	UFUNCTION(BlueprintCallable, Category = "Steam Workshop")
-	bool DownloadWorkshopMap(uint64 WorkshopFileId);
+	bool DownloadWorkshopMap(int64 WorkshopFileId);
 };
