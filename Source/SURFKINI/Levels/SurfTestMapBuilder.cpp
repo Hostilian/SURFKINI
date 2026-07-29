@@ -7,7 +7,6 @@
 #include "Engine/SkyLight.h"
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
-#include "UObject/ConstructorHelpers.h"
 
 ASurfTestMapBuilder::ASurfTestMapBuilder()
 {
@@ -16,23 +15,14 @@ ASurfTestMapBuilder::ASurfTestMapBuilder()
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	SetRootComponent(RootComp);
 
-	// Safely load Engine Cube Mesh inside constructor
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
-	if (MeshFinder.Succeeded())
-	{
-		CubeMesh = MeshFinder.Object;
-	}
-	else
-	{
-		CubeMesh = nullptr;
-	}
+	CubeMesh = nullptr;
 }
 
 void ASurfTestMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Ensure Mesh is available at runtime
+	// Safely load Engine Cube Mesh at runtime without ConstructorHelpers assertion crash
 	if (!CubeMesh)
 	{
 		CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
