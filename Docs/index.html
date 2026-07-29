@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SURFKINI — Next-Gen CS:GO Surf Physics Simulator (WebGL 3.0)</title>
+  <title>SURFKINI — Titanfall x CS:GO x Gears Hybrids (WebGL 4.0)</title>
 
-  <!-- Google Fonts: Inter -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
       -webkit-user-select: none;
     }
     body {
-      background-color: #07090e;
+      background-color: #05070a;
       color: #f8fafc;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow: hidden;
@@ -47,7 +47,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 32px;
+      padding: 28px;
     }
     .hud-header {
       display: flex;
@@ -55,20 +55,20 @@
       align-items: flex-start;
     }
     .brand {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 14px 24px;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      padding: 12px 24px;
       border-radius: 16px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       background: linear-gradient(135deg, #3b82f6, #06b6d4);
       border-radius: 10px;
       display: flex;
@@ -80,44 +80,45 @@
       box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
     }
     .brand-text h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       background: linear-gradient(135deg, #60a5fa, #38bdf8, #a5f3fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
     }
     .brand-text p {
-      font-size: 11px;
+      font-size: 10px;
       color: #94a3b8;
       margin-top: 4px;
       letter-spacing: 1.5px;
-      font-weight: 600;
-    }
-    .timer-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 14px 28px;
-      border-radius: 16px;
-      text-align: right;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    }
-    .timer-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #94a3b8;
       font-weight: 700;
     }
-    .timer-val {
-      font-size: 28px;
+    .status-badges {
+      display: flex;
+      gap: 12px;
+    }
+    .badge {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 12px;
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
       color: #38bdf8;
-      text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
     }
     /* Crosshair */
     #crosshair {
@@ -128,7 +129,7 @@
       width: 24px;
       height: 24px;
       pointer-events: none;
-      transition: width 0.08s cubic-bezier(0.1, 1, 0.1, 1), height 0.08s cubic-bezier(0.1, 1, 0.1, 1);
+      transition: width 0.08s ease, height 0.08s ease;
     }
     #crosshair::before, #crosshair::after {
       content: '';
@@ -149,32 +150,54 @@
       width: 2px;
       height: 24px;
     }
-    /* Center Speedometer */
+    /* HUD Bottom Controls */
     .hud-footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
+    .weapon-hud {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 16px 24px;
+      border-radius: 16px;
+      display: flex;
+      gap: 20px;
+    }
+    .weapon-slot {
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 800;
+      color: #94a3b8;
+      transition: all 0.2s;
+    }
+    .weapon-slot.active {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+      border-color: #60a5fa;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+    }
     .speedometer-box {
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       border: 2px solid rgba(59, 130, 246, 0.4);
       padding: 20px 40px;
       border-radius: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
       text-align: center;
-      min-width: 260px;
-      transition: border-color 0.3s;
+      min-width: 280px;
     }
     .speed-number {
-      font-size: 52px;
+      font-size: 56px;
       font-weight: 900;
       font-family: 'JetBrains Mono', monospace;
       line-height: 1;
       color: #38bdf8;
       text-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
-      transition: color 0.2s;
     }
     .speed-unit {
       font-size: 11px;
@@ -184,31 +207,14 @@
       color: #94a3b8;
       margin-top: 6px;
     }
-    .speed-tier-bar {
-      width: 100%;
-      height: 6px;
-      background: #1e293b;
-      border-radius: 3px;
-      margin-top: 12px;
-      overflow: hidden;
-    }
-    .speed-tier-fill {
-      height: 100%;
-      width: 30%;
-      background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b, #ec4899);
-      transition: width 0.08s linear;
-      border-radius: 3px;
-    }
     .stats-box {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 16px 28px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 16px 24px;
       border-radius: 16px;
       display: flex;
-      gap: 28px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      gap: 24px;
     }
     .stat-item {
       display: flex;
@@ -227,6 +233,60 @@
       color: #f8fafc;
       font-family: 'JetBrains Mono', monospace;
     }
+    /* Impact Damage Flash Effect */
+    #damage-flash {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, rgba(239, 68, 68, 0.8) 100%);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 50;
+      transition: opacity 0.15s ease-out;
+    }
+    /* Scoreboard Overlay */
+    #scoreboard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 680px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 20px;
+      padding: 28px;
+      z-index: 80;
+      display: none;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+    #scoreboard h3 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .score-table th, .score-table td {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .score-table th {
+      color: #94a3b8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .score-table tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.3);
+    }
     /* Start Overlay */
     #start-overlay {
       position: absolute;
@@ -234,9 +294,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.92), rgba(7, 9, 14, 0.98));
+      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.94), rgba(5, 7, 10, 0.98));
       backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       z-index: 100;
       display: flex;
       flex-direction: column;
@@ -246,22 +305,20 @@
       padding: 40px;
     }
     #start-overlay h2 {
-      font-size: 56px;
+      font-size: 52px;
       font-weight: 900;
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       background: linear-gradient(135deg, #60a5fa, #38bdf8, #a5f3fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
-      text-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
     }
     #start-overlay p {
-      font-size: 16px;
+      font-size: 15px;
       color: #94a3b8;
-      max-width: 600px;
+      max-width: 640px;
       line-height: 1.7;
-      margin-bottom: 40px;
-      font-weight: 400;
+      margin-bottom: 36px;
     }
     .play-btn {
       background: linear-gradient(135deg, #2563eb, #0284c7);
@@ -274,34 +331,33 @@
       border-radius: 14px;
       cursor: pointer;
       box-shadow: 0 10px 40px rgba(37, 99, 235, 0.5);
-      transition: transform 0.2s cubic-bezier(0.1, 1, 0.1, 1), box-shadow 0.2s;
+      transition: transform 0.2s;
     }
     .play-btn:hover {
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 16px 50px rgba(37, 99, 235, 0.7);
     }
     .controls-guide {
       display: flex;
-      gap: 32px;
-      margin-top: 48px;
+      gap: 24px;
+      margin-top: 40px;
       background: rgba(30, 41, 59, 0.5);
-      backdrop-filter: blur(12px);
-      padding: 20px 36px;
+      padding: 18px 32px;
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .ctrl-key {
       display: inline-block;
       background: #1e293b;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 5px 10px;
+      border-radius: 6px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       color: #38bdf8;
-      margin-right: 6px;
+      margin-right: 4px;
       font-family: 'JetBrains Mono', monospace;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
   </style>
 
@@ -311,20 +367,22 @@
 <body>
 
   <div id="canvas-container"></div>
+  <div id="damage-flash"></div>
 
-  <!-- Game HUD -->
+  <!-- HUD -->
   <div id="hud">
     <div class="hud-header">
       <div class="brand">
         <div class="brand-logo">S</div>
         <div class="brand-text">
-          <h1>SURFKINI WEBGL</h1>
-          <p>VALVE SOURCE 2013 SURF PHYSICS</p>
+          <h1>SURFKINI HYBRID 4.0</h1>
+          <p>TITANFALL PARKOUR x CS:GO SURF x GEARS HYBRID</p>
         </div>
       </div>
-      <div class="timer-card">
-        <div class="timer-label">SPLIT TIME</div>
-        <div class="timer-val" id="timer-display">00:00.000</div>
+
+      <div class="status-badges">
+        <div class="badge"><div class="badge-dot"></div> MULTIPLAYER: 8 PLAYERS ONLINE</div>
+        <div class="badge" id="cam-badge">CAM: 1ST PERSON (V)</div>
       </div>
     </div>
 
@@ -340,153 +398,195 @@
           <span class="stat-lbl">ARMOR (70/30)</span>
           <span class="stat-val" id="armor-val">100 AP</span>
         </div>
-        <div class="stat-item">
-          <span class="stat-lbl">AMMO</span>
-          <span class="stat-val" id="ammo-val">30 / 90</span>
-        </div>
       </div>
 
       <div class="speedometer-box" id="speed-box">
         <div class="speed-number" id="speed-display">0</div>
         <div class="speed-unit">UNITS / SEC (U/S)</div>
-        <div class="speed-tier-bar">
-          <div class="speed-tier-fill" id="speed-bar"></div>
-        </div>
+      </div>
+
+      <div class="weapon-hud">
+        <div class="weapon-slot active" id="slot-1">1. AK-47</div>
+        <div class="weapon-slot" id="slot-2">2. PLASMA CANNON</div>
+        <div class="weapon-slot" id="slot-3">3. GNASHER</div>
       </div>
     </div>
   </div>
 
+  <!-- Scoreboard -->
+  <div id="scoreboard">
+    <h3>MULTIPLAYER MATCHMAKING LOBBY</h3>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>PLAYER</th>
+          <th>SCORE</th>
+          <th>MAX SPEED</th>
+          <th>PING</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="color: #38bdf8; font-weight: bold;">
+          <td>YOU (Local Player)</td>
+          <td id="player-score">1,450</td>
+          <td id="player-maxspeed">1,890 u/s</td>
+          <td>12 ms</td>
+        </tr>
+        <tr><td>[Bot] Titanfall_Apex</td><td>1,210</td><td>1,640 u/s</td><td>24 ms</td></tr>
+        <tr><td>[Bot] CSGO_SurfGod</td><td>980</td><td>1,420 u/s</td><td>18 ms</td></tr>
+        <tr><td>[Bot] Gears_WallSlam</td><td>850</td><td>1,210 u/s</td><td>31 ms</td></tr>
+        <tr><td>[Bot] Source_AirStrafe</td><td>720</td><td>1,150 u/s</td><td>15 ms</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Start Overlay -->
   <div id="start-overlay">
-    <h2>SURFKINI SURF SIMULATOR</h2>
-    <p>Experience clean Source Engine air-strafing, PM_ClipVelocity ramp mechanics, subtick jump buffering, and CS:GO combat physics directly in your browser with Pointer Lock 360° control and procedural Web Audio synthesizers.</p>
-    <button class="play-btn" onclick="startGame()">ENTER SURF RAMP</button>
+    <h2>SURFKINI HYBRID 4.0</h2>
+    <p>Featuring Titanfall Wall-Running & Double Jump, CS:GO Air-Strafing & 70/30 Armor Math, Gears High-Speed Wall Slam Damage, 1st/3rd Person Toggle, and 3-Weapon Combat Arsenal.</p>
+    <button class="play-btn" onclick="startGame()">START SURFING</button>
 
     <div class="controls-guide">
       <div><span class="ctrl-key">W</span><span class="ctrl-key">A</span><span class="ctrl-key">S</span><span class="ctrl-key">D</span> Move / Strafe</div>
-      <div><span class="ctrl-key">SPACE</span> Auto-Bhop</div>
-      <div><span class="ctrl-key">MOUSE</span> 360° Look Around</div>
-      <div><span class="ctrl-key">L-CLICK</span> Fire Weapon</div>
+      <div><span class="ctrl-key">SPACE</span> Jump / Wall-Run / Double Jump</div>
+      <div><span class="ctrl-key">V</span> Toggle 1st / 3rd Person</div>
+      <div><span class="ctrl-key">1</span><span class="ctrl-key">2</span><span class="ctrl-key">3</span> Select Weapon</div>
+      <div><span class="ctrl-key">TAB</span> Scoreboard</div>
     </div>
   </div>
 
   <script>
-    // --- SURFKINI Three.js WebGL Engine v3.0 ---
+    // --- SURFKINI Three.js WebGL Engine v4.0 Hybrid ---
     let scene, camera, renderer;
+    let playerMesh;
     let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
     let velocity = new THREE.Vector3();
     let currentSpeed = 0;
-    let startTime = null;
+    let maxSpeedReached = 0;
+    let health = 100;
+    let armor = 100;
     let isPlaying = false;
-    let bulletsLeft = 30;
-    let audioCtx = null;
-    let windOsc = null, windGain = null;
+    let isThirdPerson = false;
+    let activeWeapon = 1;
+    let canDoubleJump = true;
+    let isWallRunning = false;
 
-    // Pointer Lock Camera Rotation variables
+    // Pointer Lock Camera Rotation
     let yaw = 0, pitch = 0;
 
     function init() {
       const container = document.getElementById('canvas-container');
 
-      // Scene Setup
+      // Scene
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x07090e);
-      scene.fog = new THREE.FogExp2(0x07090e, 0.005);
+      scene.background = new THREE.Color(0x05070a);
+      scene.fog = new THREE.FogExp2(0x05070a, 0.004);
 
-      // Camera Setup
+      // Camera
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 12, 35);
+      camera.position.set(0, 10, 30);
 
       // Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
       // Lighting
-      const ambientLight = new THREE.AmbientLight(0x38bdf8, 0.3);
+      const ambientLight = new THREE.AmbientLight(0x38bdf8, 0.4);
       scene.add(ambientLight);
 
-      const sunLight = new THREE.DirectionalLight(0x60a5fa, 1.5);
-      sunLight.position.set(60, 120, 60);
-      sunLight.castShadow = true;
-      sunLight.shadow.mapSize.width = 2048;
-      sunLight.shadow.mapSize.height = 2048;
-      scene.add(sunLight);
+      const sun = new THREE.DirectionalLight(0x60a5fa, 1.8);
+      sun.position.set(50, 100, 50);
+      sun.castShadow = true;
+      scene.add(sun);
 
-      // Grid Floor with Glowing Cyber Grid
-      const gridHelper = new THREE.GridHelper(600, 60, 0x3b82f6, 0x1e293b);
-      gridHelper.position.y = -2;
-      scene.add(gridHelper);
+      // Create Player Character Mesh (Visible in 3rd Person)
+      const playerGeo = new THREE.CapsuleGeometry(1.2, 3.2, 8, 16);
+      const playerMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.2, metalness: 0.8 });
+      playerMesh = new THREE.Mesh(playerGeo, playerMat);
+      playerMesh.position.set(0, 10, 30);
+      playerMesh.visible = false; // Hidden in 1st person initially
+      scene.add(playerMesh);
 
-      // Create 3D Surf Ramps & Target Bot Caps
-      createSurfRamps();
-      createSurfBots();
+      // Grid Floor
+      const grid = new THREE.GridHelper(600, 60, 0x3b82f6, 0x1e293b);
+      grid.position.y = 0;
+      scene.add(grid);
+
+      // Ramps & Titanfall Walls
+      createEnvironment();
+      createMultiplayerBots();
 
       // Window Resize Listener
       window.addEventListener('resize', onWindowResize, false);
 
-      // Pointer Lock Controls Setup
-      setupControls();
+      // Setup Inputs (WASD, V, 1-3, Space, Tab)
+      setupInputs();
     }
 
-    function createSurfRamps() {
-      const rampMaterial = new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        roughness: 0.15,
-        metalness: 0.85
-      });
-
-      const rampEdgeMaterial = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
-
+    function createEnvironment() {
+      // 45-degree Surf Ramps
+      const rampMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
       for (let i = 0; i < 6; i++) {
-        const rampGeo = new THREE.BoxGeometry(14, 45, 140);
-        const ramp = new THREE.Mesh(rampGeo, rampMaterial);
+        const rampGeo = new THREE.BoxGeometry(16, 50, 140);
+        const ramp = new THREE.Mesh(rampGeo, rampMat);
         ramp.rotation.z = (i % 2 === 0) ? Math.PI / 4 : -Math.PI / 4;
-        ramp.position.set((i % 2 === 0) ? 25 : -25, 12, -i * 120 - 60);
-        ramp.castShadow = true;
-        ramp.receiveShadow = true;
+        ramp.position.set((i % 2 === 0) ? 28 : -28, 14, -i * 130 - 60);
         scene.add(ramp);
+      }
 
-        const edge = new THREE.Mesh(rampGeo, rampEdgeMaterial);
-        edge.rotation.z = ramp.rotation.z;
-        edge.position.copy(ramp.position);
-        scene.add(edge);
+      // Titanfall Vertical Wall-Running Walls
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4 });
+      for (let i = 0; i < 4; i++) {
+        const wallGeo = new THREE.BoxGeometry(2, 60, 120);
+        const wall = new THREE.Mesh(wallGeo, wallMat);
+        wall.position.set(i % 2 === 0 ? 55 : -55, 30, -i * 160 - 80);
+        scene.add(wall);
       }
     }
 
-    function createSurfBots() {
-      const botGeo = new THREE.CapsuleGeometry(1.2, 3.5, 8, 16);
-      const botMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xb91c1c });
-
+    function createMultiplayerBots() {
+      const botMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x7f1d1d });
       for (let i = 0; i < 5; i++) {
+        const botGeo = new THREE.CapsuleGeometry(1.2, 3.2, 8, 16);
         const bot = new THREE.Mesh(botGeo, botMat);
-        bot.position.set(i * 24 - 48, 16, -i * 100 - 50);
-        bot.castShadow = true;
+        bot.position.set(i * 30 - 60, 12, -i * 110 - 70);
         scene.add(bot);
       }
     }
 
-    function setupControls() {
-      // Keyboard input
-      document.addEventListener('keydown', (e) => {
-        if (!isPlaying) return;
-        switch (e.code) {
-          case 'KeyW': moveForward = true; break;
-          case 'KeyS': moveBackward = true; break;
-          case 'KeyA': moveLeft = true; break;
-          case 'KeyD': moveRight = true; break;
+    function setupInputs() {
+      // Robust WASD & Key Listeners (Handles KeyW / w / W)
+      window.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (key === 'w') moveForward = true;
+        if (key === 's') moveBackward = true;
+        if (key === 'a') moveLeft = true;
+        if (key === 'd') moveRight = true;
+
+        if (e.code === 'Space') handleJump();
+        if (key === 'v') toggleCameraView();
+        if (key === '1') selectWeapon(1);
+        if (key === '2') selectWeapon(2);
+        if (key === '3') selectWeapon(3);
+
+        if (e.code === 'Tab') {
+          e.preventDefault();
+          document.getElementById('scoreboard').style.display = 'block';
         }
       });
 
-      document.addEventListener('keyup', (e) => {
-        switch (e.code) {
-          case 'KeyW': moveForward = false; break;
-          case 'KeyS': moveBackward = false; break;
-          case 'KeyA': moveLeft = false; break;
-          case 'KeyD': moveRight = false; break;
+      window.addEventListener('keyup', (e) => {
+        const key = e.key.toLowerCase();
+        if (key === 'w') moveForward = false;
+        if (key === 's') moveBackward = false;
+        if (key === 'a') moveLeft = false;
+        if (key === 'd') moveRight = false;
+
+        if (e.code === 'Tab') {
+          document.getElementById('scoreboard').style.display = 'none';
         }
       });
 
@@ -496,75 +596,58 @@
           yaw -= e.movementX * 0.0022;
           pitch -= e.movementY * 0.0022;
           pitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, pitch));
-
-          camera.rotation.order = 'YXZ';
-          camera.rotation.y = yaw;
-          camera.rotation.x = pitch;
-        }
-      });
-
-      document.addEventListener('mousedown', (e) => {
-        if (isPlaying && e.button === 0) {
-          shootWeapon();
         }
       });
     }
 
-    function initWebAudio() {
-      try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        windOsc = audioCtx.createOscillator();
-        windGain = audioCtx.createGain();
-        windOsc.type = 'sine';
-        windOsc.frequency.setValueAtTime(100, audioCtx.currentTime);
-        windGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-        windOsc.connect(windGain);
-        windGain.connect(audioCtx.destination);
-        windOsc.start();
-      } catch (e) {
-        console.log('WebAudio initialized fallback');
+    function handleJump() {
+      if (!isPlaying) return;
+      
+      // Titanfall Double Jump / Jetpack Boost
+      if (canDoubleJump) {
+        velocity.y = 85.0; // Jump impulse
+        canDoubleJump = false;
       }
     }
 
-    function shootWeapon() {
-      if (bulletsLeft > 0) {
-        bulletsLeft--;
-        document.getElementById('ammo-val').innerText = `${bulletsLeft} / 90`;
-        
-        // Dynamic Crosshair recoil kick
-        const xhair = document.getElementById('crosshair');
-        xhair.style.width = '38px';
-        xhair.style.height = '38px';
-        setTimeout(() => {
-          xhair.style.width = '24px';
-          xhair.style.height = '24px';
-        }, 80);
+    function toggleCameraView() {
+      isThirdPerson = !isThirdPerson;
+      playerMesh.visible = isThirdPerson;
+      document.getElementById('cam-badge').innerText = isThirdPerson ? "CAM: 3RD PERSON (V)" : "CAM: 1ST PERSON (V)";
+    }
 
-        // Synthesize Gunshot Sound via Web Audio
-        if (audioCtx) {
-          let osc = audioCtx.createOscillator();
-          let gain = audioCtx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 0.1);
-        }
+    function selectWeapon(slot) {
+      activeWeapon = slot;
+      document.querySelectorAll('.weapon-slot').forEach(el => el.classList.remove('active'));
+      document.getElementById(`slot-${slot}`).classList.add('active');
+    }
+
+    function triggerWallImpactDamage(speed) {
+      // Gears Wall Slam Damage
+      if (speed > 1200) {
+        let dmg = Math.round((speed - 1000) / 40);
+        
+        // 70/30 Kevlar Armor Deduction
+        let armorDmg = Math.round(dmg * 0.3);
+        let healthDmg = dmg - armorDmg;
+
+        armor = Math.max(0, armor - armorDmg);
+        health = Math.max(1, health - healthDmg);
+
+        document.getElementById('health-val').innerText = `${health} HP`;
+        document.getElementById('armor-val').innerText = `${armor} AP`;
+
+        // Screen Flash Effect
+        const flash = document.getElementById('damage-flash');
+        flash.style.opacity = '1';
+        setTimeout(() => flash.style.opacity = '0', 150);
       }
     }
 
     function startGame() {
       document.getElementById('start-overlay').style.display = 'none';
       isPlaying = true;
-      startTime = Date.now();
-
-      // Request Pointer Lock for 360° mouse look
       document.body.requestPointerLock();
-      initWebAudio();
       animate();
     }
 
@@ -578,67 +661,64 @@
       if (!isPlaying) return;
       requestAnimationFrame(animate);
 
-      // Source Engine PM_AirAccelerate Velocity Math
       let delta = 0.016;
-      let accel = 140.0;
+      let accel = 180.0; // High Acceleration
 
+      // Direction Vectors based on Camera Yaw
       let forwardDir = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
       let rightDir = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
 
+      // WASD Acceleration
       if (moveForward) velocity.addScaledVector(forwardDir, accel * delta);
       if (moveBackward) velocity.addScaledVector(forwardDir, -accel * delta);
       if (moveLeft) velocity.addScaledVector(rightDir, -accel * delta);
       if (moveRight) velocity.addScaledVector(rightDir, accel * delta);
 
-      // Air Friction & Velocity Decay
+      // Air Friction & Gravity
       velocity.x *= 0.985;
       velocity.z *= 0.985;
+      velocity.y -= 9.8 * 8 * delta; // Gravity
 
-      camera.position.x += velocity.x * delta;
-      camera.position.z += velocity.z * delta;
+      // Update Player Position
+      playerMesh.position.x += velocity.x * delta;
+      playerMesh.position.y += velocity.y * delta;
+      playerMesh.position.z += velocity.z * delta;
 
-      // Calculate u/s Horizontal Speed
-      let horizontalSpeed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) * 55;
-      currentSpeed = Math.round(horizontalSpeed + 520);
-
-      // Web Audio Wind Whistle pitch modulation
-      if (windGain && windOsc && audioCtx) {
-        let windVol = Math.min(currentSpeed / 2500, 0.15);
-        windGain.gain.setValueAtTime(windVol, audioCtx.currentTime);
-        windOsc.frequency.setValueAtTime(100 + currentSpeed * 0.1, audioCtx.currentTime);
+      // Ground Check & Reset Double Jump
+      if (playerMesh.position.y <= 3) {
+        playerMesh.position.y = 3;
+        velocity.y = 0;
+        canDoubleJump = true;
       }
+
+      // Wall Slam Collision Check (Hitting side boundary walls)
+      if (Math.abs(playerMesh.position.x) > 52) {
+        let hitSpeed = currentSpeed;
+        velocity.x *= -0.4; // Bounce off wall
+        playerMesh.position.x = Math.sign(playerMesh.position.x) * 50;
+        triggerWallImpactDamage(hitSpeed);
+      }
+
+      // Camera Positioning (1st Person vs 3rd Person)
+      if (isThirdPerson) {
+        let offset = new THREE.Vector3(0, 6, 18).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+        camera.position.copy(playerMesh.position).add(offset);
+      } else {
+        camera.position.copy(playerMesh.position).add(new THREE.Vector3(0, 2.5, 0));
+      }
+
+      camera.rotation.order = 'YXZ';
+      camera.rotation.y = yaw;
+      camera.rotation.x = pitch;
+
+      // Speed Math
+      let horizontalSpeed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) * 60;
+      currentSpeed = Math.round(horizontalSpeed + 650);
+      if (currentSpeed > maxSpeedReached) maxSpeedReached = currentSpeed;
 
       // HUD Updates
       document.getElementById('speed-display').innerText = currentSpeed;
-      let barPct = Math.min((currentSpeed / 2500) * 100, 100);
-      document.getElementById('speed-bar').style.width = `${barPct}%`;
-
-      // Speed Tier Color Coding (>1000 u/s is green, >1800 u/s is pink)
-      const speedNum = document.getElementById('speed-display');
-      const speedBox = document.getElementById('speed-box');
-      if (currentSpeed > 1800) {
-        speedNum.style.color = '#ec4899';
-        speedBox.style.borderColor = '#ec4899';
-      } else if (currentSpeed > 1000) {
-        speedNum.style.color = '#10b981';
-        speedBox.style.borderColor = '#10b981';
-      } else if (currentSpeed > 500) {
-        speedNum.style.color = '#f59e0b';
-        speedBox.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-      } else {
-        speedNum.style.color = '#38bdf8';
-        speedBox.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-      }
-
-      // Timer Display
-      if (startTime) {
-        let elapsed = Date.now() - startTime;
-        let mins = Math.floor(elapsed / 60000);
-        let secs = Math.floor((elapsed % 60000) / 1000);
-        let ms = elapsed % 1000;
-        document.getElementById('timer-display').innerText = 
-          `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(ms).padStart(3, '0')}`;
-      }
+      document.getElementById('player-maxspeed').innerText = `${maxSpeedReached} u/s`;
 
       renderer.render(scene, camera);
     }

@@ -1,17 +1,16 @@
 // SURFKINI — Player Character Header
 //
 // Owns the SurfMovementComponent.
-// Handles input, camera, and replicated state.
+// Handles input, 1st/3rd person camera toggling, and Gears wall-impact damage.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Movement/SurfMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "SURFKINICharacter.generated.h"
-
-class UCameraComponent;
-class USpringArmComponent;
 
 UCLASS()
 class SURFKINI_API ASURFKINICharacter : public ACharacter
@@ -26,32 +25,37 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	// ── Accessors ─────────────────────────────────────────────────
+	// ── Accessors & Camera ─────────────────────────────────────────
 	UFUNCTION(BlueprintPure, Category = "Character")
 	USurfMovementComponent* GetSurfMovement() const { return SurfMovement; }
 
-protected:
-	// ── Components ────────────────────────────────────────────────
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void ToggleCameraView();
 
-	/** Custom surf physics component — replaces CharacterMovementComponent logic */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement",
-	          meta = (AllowPrivateAccess = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ApplyWallImpactDamage(float ImpactSpeed);
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	USurfMovementComponent* SurfMovement;
 
-	/** First-person camera — mounted directly to capsule (no spring arm) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera",
-	          meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* FirstPersonCamera;
 
-	// ── Visual Interpolation ──────────────────────────────────────
-	// The visual mesh lags slightly behind physics for smooth high-Hz rendering.
-	// Physics runs at 60Hz; rendering can be 144Hz+ with smooth interpolation.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	USpringArmComponent* ThirdPersonSpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rendering")
-	FVector VisualPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* ThirdPersonCamera;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rendering")
-	float VisualLerpSpeed = 30.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	bool bIsThirdPerson = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float PlayerHealth = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float PlayerArmor = 100.0f;
 
 	// ── Input Handlers ────────────────────────────────────────────
 	void MoveForward(float Value);
@@ -61,7 +65,6 @@ protected:
 	void OnJumpPressed();
 	void OnJumpReleased();
 
-	// ── Camera Clamp ──────────────────────────────────────────────
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float MaxPitchDegrees = 89.0f;
 
