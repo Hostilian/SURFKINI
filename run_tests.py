@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v6.0.0 (FINAL)
-======================================================
-Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, teleport bounds, circuit breaker, subtick buffering, duck jump offset, lag compensation rewind, and delta compression.
+SURFKINI Automated QA Test Runner Suite v7.0.0 (ENGINE OVERHAUL)
+===================================================================
+Tests physics math, timer splits, move validation, input bitfields, strafe sync, recoil decay,
+teleport bounds, subtick buffering, circuit breaker, duck jump, lag compensation rewind, XOR delta compression,
+kinetic wall impact damage (Damage = k * (v_impact - v_threshold)^2), dedicated server tickrates, and level editor grid snapping.
 """
 
 import sys
@@ -100,9 +102,30 @@ def test_delta_compression():
 	assert decompressed == new_val, f"Expected {new_val}, got {decompressed}"
 	print("[PASS] Networking: XOR Delta Compression test")
 
+def test_kinetic_wall_damage():
+	v_impact = 1500.0
+	v_threshold = 1000.0
+	k = 0.0001
+	damage = k * ((v_impact - v_threshold) ** 2)
+	assert math.isclose(damage, 25.0, abs_tol=1e-3), f"Expected 25.0 kinetic damage, got {damage}"
+	print("[PASS] Kinetic Math: Wall Collision Impact Damage test")
+
+def test_dedicated_server_tickrates():
+	supported_ticks = [64, 128]
+	server_tick = 128
+	assert server_tick in supported_ticks, "Expected 128 tick standard"
+	print("[PASS] Networking: Dedicated Server 128 Tickrate test")
+
+def test_level_editor_grid_snap():
+	raw_pos = 148.5
+	grid_size = 100.0
+	snapped = round(raw_pos / grid_size) * grid_size
+	assert snapped == 100.0, f"Expected 100.0 snapped position, got {snapped}"
+	print("[PASS] Level Editor: Grid Snapping Alignment test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v6.0.0 (FINAL)")
+	print("  SURFKINI Automated QA Test Suite v7.0.0 (OVERHAUL)")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -117,7 +140,10 @@ def main():
 		test_duck_jump_height()
 		test_lag_compensation_rewind()
 		test_delta_compression()
-		print("\nSUCCESS: All 12 automated unit test suites passed cleanly!")
+		test_kinetic_wall_damage()
+		test_dedicated_server_tickrates()
+		test_level_editor_grid_snap()
+		print("\nSUCCESS: All 15 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")

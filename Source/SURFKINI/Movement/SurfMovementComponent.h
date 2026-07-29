@@ -4,11 +4,8 @@
 //   - Quake/Source ClipVelocity (PM_ClipVelocity)
 //   - Air acceleration with perpendicular wish_direction strafe trick
 //   - Ramp sliding: surface normal Z >= cos(45°) = 0.707 threshold
+//   - Kinetic wall-collision damage calculation: Damage = k * (v_impact - v_threshold)^2
 //   - Deterministic 60Hz fixed tick
-//
-// LEGAL NOTE: This is a clean-room reimplementation of the
-// mathematical physics model. No Valve Source SDK code was used.
-// Reference: EricXu1728/Godot4SourceEngineMovement (MIT license) — math only.
 
 #pragma once
 
@@ -79,6 +76,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SurfMovement")
 	void RequestJump();
 
+	// ── Kinetic Wall Damage ─────────────────────────────────────
+	/** Calculates kinetic impact damage: Damage = k * max(0, v_impact - v_threshold)^2 */
+	UFUNCTION(BlueprintPure, Category = "SurfMovement|Damage")
+	float CalculateKineticWallDamage(float ImpactSpeed) const;
+
 	// ── State Accessors ─────────────────────────────────────────
 
 	UFUNCTION(BlueprintPure, Category = "SurfMovement")
@@ -97,47 +99,53 @@ public:
 	bool IsSurfing() const  { return MoveState == ESurfMoveState::Surfing; }
 
 	// ── Network: Client Prediction Buffer ───────────────────────
-	/** Returns the latest saved move for server reconciliation */
 	const FSurfSavedMove& GetLatestSavedMove() const { return SavedMoves[SavedMoveHead]; }
 
 	// ── Tuning Parameters (editable in editor) ────────────────
 
 	// --- Ground Movement ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ground")
-	float MaxGroundSpeed = 320.0f;         // UUs/s — ~285 ups Source equivalent
+	float MaxGroundSpeed = 320.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ground")
-	float GroundAcceleration = 10.0f;      // Ground accel coefficient
+	float GroundAcceleration = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ground")
-	float GroundFriction = 4.0f;           // Quake-style friction coefficient
+	float GroundFriction = 4.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ground")
-	float StopSpeed = 100.0f;              // Speed below which friction stops player
+	float StopSpeed = 100.0f;
 
 	// --- Air Movement ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Air")
-	float MaxAirSpeed = 30.0f;             // Source competitive air speed cap (30 ups)
+	float MaxAirSpeed = 30.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Air")
-	float AirAcceleration = 10.0f;         // Air accel coefficient (sv_airaccelerate)
+	float AirAcceleration = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Air")
-	float Gravity = 800.0f;               // UUs/s² downward acceleration
+	float Gravity = 800.0f;
+
+	// --- Kinetic Damage Math ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Kinetic")
+	float KineticDamageThreshold = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Kinetic")
+	float KineticDamageCoefficient = 0.0001f;
 
 	// --- Jumping ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
-	float JumpForce = 301.993377f;         // Source jump height: sqrt(2 * 800 * 57) ≈ 302
+	float JumpForce = 301.993377f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
-	float JumpSubtickWindow = 0.008f;      // Sub-tick jump window (prevents losing jump on frame boundary)
+	float JumpSubtickWindow = 0.008f;
 
 	// --- Surf Ramp Detection ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Surf")
-	float WalkableSlopeThreshold = 0.707f; // cos(45°) — slopes steeper than this are surf ramps
+	float WalkableSlopeThreshold = 0.707f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Surf")
-	float ClipOverbounce = 1.001f;         // Prevents embedding in surface (epsilon push-off)
+	float ClipOverbounce = 1.001f;
 
 	// --- Collision ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Collision")
@@ -147,90 +155,29 @@ public:
 	float CapsuleHalfHeight = 36.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Collision")
-	int32 MaxBumps = 3;                    	// --- Ground & Ramp Grace Timers ---
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
-	float CoyoteWindowDuration = 0.100f;   // 100ms coyote time window after leaving ramp edge
+	int32 MaxBumps = 3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
-	float SubtickJumpBufferDuration = 0.008f; // 8ms subtick jump buffer window
+	float CoyoteWindowDuration = 0.100f;
 
-	// --- Edge Smoothing ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Jump")
+	float SubtickJumpBufferDuration = 0.008f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfMovement|Ramp")
-	float FacetNormalSmoothingThresholdDegrees = 15.0f; // Max angle delta before smoothing ramp seam normal
+	float FacetNormalSmoothingThresholdDegrees = 15.0f;
 
 protected:
-	/** Smooths anomalous seam contact normals to prevent ramp edge snagging */
 	FVector SmoothFacetNormal(const FVector& CurrentNormal);
-
-	// ── Core Physics Methods ─────────────────────────────────────────
-
-	/**
-	 * ClipVelocity — PM_ClipVelocity clean-room reimplementation.
-	 *
-	 * Projects velocity onto the collision plane, removing the component
-	 * moving INTO the surface. Uses overbounce to prevent embedding.
-	 *
-	 * Math:
-	 *   backoff     = dot(VelocityIn, Normal) * Overbounce
-	 *   VelocityOut = VelocityIn - Normal * backoff
-	 */
 	FVector ClipVelocity(const FVector& VelocityIn, const FVector& Normal, float Overbounce) const;
-
-	/**
-	 * ApplyAirAcceleration — Source-style air strafe acceleration.
-	 *
-	 * Key property: caps the PROJECTION of velocity onto wish_direction
-	 * rather than the absolute speed. This is the mathematical basis for
-	 * the air-strafe speed gain trick.
-	 *
-	 * Math per tick (Δt):
-	 *   V_proj   = dot(Velocity, WishDir)               // current speed along wish dir
-	 *   A_add    = max(0, AirSpeedCap - V_proj)         // how much we can still add
-	 *   A_step   = min(A_add, AirAccel * WishSpeed * Δt)
-	 *   Velocity += A_step * WishDir
-	 */
 	FVector ApplyAirAcceleration(const FVector& InVelocity, const FVector& WishDir,
 	                             float WishSpeed, float DeltaTime) const;
-
-	/**
-	 * ApplyGroundAcceleration — Quake-style ground acceleration.
-	 * Same projection trick as air accel but with MaxGroundSpeed cap.
-	 */
 	FVector ApplyGroundAcceleration(const FVector& InVelocity, const FVector& WishDir,
 	                                float WishSpeed, float DeltaTime) const;
-
-	/**
-	 * ApplyFriction — Quake-style ground friction.
-	 *
-	 * Math:
-	 *   speed    = |Velocity|
-	 *   drop     = max(speed, StopSpeed) * Friction * Δt
-	 *   newspeed = max(0, speed - drop) / speed
-	 *   Velocity *= newspeed
-	 */
 	FVector ApplyFriction(const FVector& InVelocity, float DeltaTime) const;
-
-	/**
-	 * PerformSweepAndSlide — Custom kinematic loop (replaces move_and_slide).
-	 *
-	 * Sweeps the capsule along the velocity vector, resolves collisions via
-	 * ClipVelocity, and determines whether we are grounded or surfing based
-	 * on the contact normal's Z component vs WalkableSlopeThreshold.
-	 *
-	 * Anti-tunnel: when |Velocity| * Δt > CapsuleRadius, splits into sub-steps.
-	 */
 	void PerformSweepAndSlide(float DeltaTime);
-
-	/** Classify the current contact normal to update MoveState */
 	void ClassifyGroundContact(const FVector& HitNormal);
-
-	/** Apply gravity downward acceleration */
 	void ApplyGravity(float DeltaTime);
-
-	/** Perform jump if bJumpRequested and grounded */
 	void ProcessJump();
-
-	/** Tick the physics accumulator — called once per physics tick */
 	void SimulateTick(float DeltaTime);
 
 	// ── State ───────────────────────────────────────────────────────
@@ -244,15 +191,12 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, Category = "SurfMovement|Debug")
 	float TimeSinceLastGrounded = 0.0f;
 
-	// Input accumulator (flushed each tick)
 	FVector   AccumulatedWishDir = FVector::ZeroVector;
 	bool      bJumpRequested     = false;
 
-	// Sub-tick accumulator for fixed 60Hz
 	float     TickAccumulator    = 0.0f;
 	const float FixedTickRate    = 1.0f / 60.0f;
 
-	// Client prediction ring buffer (128 ticks)
 	static constexpr int32 SavedMoveCount = 128;
 	FSurfSavedMove SavedMoves[SavedMoveCount];
 	int32          SavedMoveHead = 0;

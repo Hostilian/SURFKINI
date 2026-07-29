@@ -248,6 +248,17 @@ FVector USurfMovementComponent::ApplyFriction(const FVector& InVelocity, float D
 	return FVector(InVelocity.X * NewSpeed, InVelocity.Y * NewSpeed, InVelocity.Z);
 }
 
+float USurfMovementComponent::CalculateKineticWallDamage(float ImpactSpeed) const
+{
+	if (ImpactSpeed <= KineticDamageThreshold)
+	{
+		return 0.0f;
+	}
+	const float ExcessSpeed = ImpactSpeed - KineticDamageThreshold;
+	return KineticDamageCoefficient * ExcessSpeed * ExcessSpeed;
+}
+
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ApplyGravity
 // ─────────────────────────────────────────────────────────────────────────────
