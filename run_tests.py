@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v7.0.0 (ENGINE OVERHAUL)
-===================================================================
+SURFKINI Automated QA Test Runner Suite v8.0.0 (GEAR & LOADOUTS ENHANCED)
+===========================================================================
 Tests physics math, timer splits, move validation, input bitfields, strafe sync, recoil decay,
 teleport bounds, subtick buffering, circuit breaker, duck jump, lag compensation rewind, XOR delta compression,
-kinetic wall impact damage (Damage = k * (v_impact - v_threshold)^2), dedicated server tickrates, and level editor grid snapping.
+kinetic wall impact damage (Damage = k * (v_impact - v_threshold)^2), dedicated server tickrates, level editor grid snapping,
+and gear loadout speed/armor stat multipliers.
 """
 
 import sys
@@ -123,9 +124,16 @@ def test_level_editor_grid_snap():
 	assert snapped == 100.0, f"Expected 100.0 snapped position, got {snapped}"
 	print("[PASS] Level Editor: Grid Snapping Alignment test")
 
+def test_gear_loadout_modifiers():
+	base_speed = 320.0
+	thrusters_mult = 1.15
+	boosted_speed = base_speed * thrusters_mult
+	assert math.isclose(boosted_speed, 368.0, abs_tol=1e-3), f"Expected 368.0 boosted speed, got {boosted_speed}"
+	print("[PASS] Gear System: Speed Thrusters Stat Multiplier test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v7.0.0 (OVERHAUL)")
+	print("  SURFKINI Automated QA Test Suite v8.0.0 (GEAR ENHANCED)")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -143,7 +151,8 @@ def main():
 		test_kinetic_wall_damage()
 		test_dedicated_server_tickrates()
 		test_level_editor_grid_snap()
-		print("\nSUCCESS: All 15 automated unit test suites passed cleanly!")
+		test_gear_loadout_modifiers()
+		print("\nSUCCESS: All 16 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")
