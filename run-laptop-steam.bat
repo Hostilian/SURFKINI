@@ -11,7 +11,8 @@ set SteamGameId=480
 echo [Laptop Optimization] Launching Standalone UE 5.8 game client...
 echo Options: 1080p Windowed, Dynamic Resolution Scaling, High Core Count Utilisation
 
-start "" "D:\GMS\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "%~dp0SURFKINI.uproject" /Engine/Maps/Entry -game -RESX=1920 -RESY=1080 -WINDOWED -USEALLAVAILABLECORES -LOG
+cd /d "D:\GMS\UE_5.8\Engine\Binaries\Win64"
+start "" "UnrealEditor.exe" "%~dp0SURFKINI.uproject" /Engine/Maps/Entry -game -RESX=1920 -RESY=1080 -WINDOWED -USEALLAVAILABLECORES -LOG
 
 echo ==================================================
 echo Game launched cleanly! Enjoy playing SURFKINI.

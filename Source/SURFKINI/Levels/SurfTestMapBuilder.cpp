@@ -3,6 +3,10 @@
 #include "Levels/SurfTestMapBuilder.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/DirectionalLight.h"
+#include "Engine/SkyLight.h"
+#include "Components/DirectionalLightComponent.h"
+#include "Components/SkyLightComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
 ASurfTestMapBuilder::ASurfTestMapBuilder()
@@ -11,24 +15,78 @@ ASurfTestMapBuilder::ASurfTestMapBuilder()
 
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	SetRootComponent(RootComp);
+
+	// Safely load Engine Cube Mesh inside constructor
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (MeshFinder.Succeeded())
+	{
+		CubeMesh = MeshFinder.Object;
+	}
+	else
+	{
+		CubeMesh = nullptr;
+	}
 }
 
 void ASurfTestMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Ensure Mesh is available at runtime
+	if (!CubeMesh)
+	{
+		CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+	}
+
+	ConstructEnvironmentLighting();
+	ConstructSpawnPlatform();
 	ConstructSurfRamps();
+}
+
+void ASurfTestMapBuilder::ConstructEnvironmentLighting()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	// Spawn Directional Sun Light
+	ADirectionalLight* SunLight = World->SpawnActor<ADirectionalLight>(FVector(0.0f, 0.0f, 1000.0f), FRotator(-45.0f, -45.0f, 0.0f));
+	if (SunLight && SunLight->GetLightComponent())
+	{
+		SunLight->GetLightComponent()->SetIntensity(3.5f);
+		SunLight->GetLightComponent()->SetLightColor(FLinearColor(1.0f, 0.95f, 0.85f));
+		SunLight->GetLightComponent()->SetCastShadows(true);
+	}
+
+	// Spawn Ambient Sky Light
+	ASkyLight* SkyLight = World->SpawnActor<ASkyLight>(FVector(0.0f, 0.0f, 1200.0f), FRotator::ZeroRotator);
+	if (SkyLight && SkyLight->GetSkyLightComponent())
+	{
+		SkyLight->GetSkyLightComponent()->SetIntensity(1.0f);
+		SkyLight->GetSkyLightComponent()->SetLightColor(FLinearColor(0.6f, 0.8f, 1.0f));
+	}
+}
+
+void ASurfTestMapBuilder::ConstructSpawnPlatform()
+{
+	UWorld* World = GetWorld();
+	if (!World || !CubeMesh) return;
+
+	// Spawn Platform (Elevated Start Area)
+	UStaticMeshComponent* SpawnComp = NewObject<UStaticMeshComponent>(this, TEXT("SpawnPlatformComp"));
+	if (SpawnComp)
+	{
+		SpawnComp->RegisterComponent();
+		SpawnComp->SetStaticMesh(CubeMesh);
+		SpawnComp->SetWorldLocationAndRotation(GetActorLocation() + FVector(0.0f, -500.0f, 300.0f), FRotator::ZeroRotator);
+		SpawnComp->SetWorldScale3D(FVector(15.0f, 15.0f, 0.5f)); // 1500x1500x50 platform
+		SpawnComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	}
 }
 
 void ASurfTestMapBuilder::ConstructSurfRamps()
 {
 	UWorld* World = GetWorld();
-	if (!World) return;
-
-	// Load Engine Cube Mesh for procedural scaling
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
-	UStaticMesh* RampMesh = CubeMeshAsset.Succeeded() ? CubeMeshAsset.Object : nullptr;
-
-	if (!RampMesh) return;
+	if (!World || !CubeMesh) return;
 
 	for (int32 i = 0; i < RampCount; ++i)
 	{
@@ -37,15 +95,16 @@ void ASurfTestMapBuilder::ConstructSurfRamps()
 		if (RampComp)
 		{
 			RampComp->RegisterComponent();
-			RampComp->SetStaticMesh(RampMesh);
+			RampComp->SetStaticMesh(CubeMesh);
 
-			// Position ramps sequentially along Y-axis with 45-degree roll pitch angle
-			float OffsetY = i * (RampLength + 200.0f);
+			// Position ramps sequentially along Y-axis with alternating 45-degree roll angle
+			float OffsetY = i * (RampLength + 400.0f);
 			float RollAngle = (i % 2 == 0) ? RampSlopeAngle : -RampSlopeAngle;
+			float PosX = (i % 2 == 0) ? 200.0f : -200.0f;
 
-			FVector Location = GetActorLocation() + FVector(0.0f, OffsetY, 0.0f);
+			FVector Location = GetActorLocation() + FVector(PosX, OffsetY + 1000.0f, -i * 300.0f);
 			FRotator Rotation = FRotator(0.0f, 0.0f, RollAngle);
-			FVector Scale = FVector(RampLength / 100.0f, 4.0f, 0.2f); // Flattened wide surf ramp
+			FVector Scale = FVector(RampLength / 100.0f, 6.0f, 0.2f); // Flat wide surf ramp wedge
 
 			RampComp->SetWorldLocationAndRotation(Location, Rotation);
 			RampComp->SetWorldScale3D(Scale);
