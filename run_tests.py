@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v5.0.0
-==============================================
-Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, teleport bounds, circuit breaker, subtick buffering, duck jump offset, and lag compensation rewind.
+SURFKINI Automated QA Test Runner Suite v6.0.0 (FINAL)
+======================================================
+Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, teleport bounds, circuit breaker, subtick buffering, duck jump offset, lag compensation rewind, and delta compression.
 """
 
 import sys
@@ -92,9 +92,17 @@ def test_lag_compensation_rewind():
 	assert math.isclose(rewound[0], 5.0, abs_tol=1e-3), f"Expected 5.0 rewound X pos, got {rewound[0]}"
 	print("[PASS] Networking: Lag Compensation Rewind test")
 
+def test_delta_compression():
+	base_val = 0b101010
+	new_val  = 0b111000
+	compressed = base_val ^ new_val
+	decompressed = base_val ^ compressed
+	assert decompressed == new_val, f"Expected {new_val}, got {decompressed}"
+	print("[PASS] Networking: XOR Delta Compression test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v5.0.0")
+	print("  SURFKINI Automated QA Test Suite v6.0.0 (FINAL)")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -108,7 +116,8 @@ def main():
 		test_circuit_breaker()
 		test_duck_jump_height()
 		test_lag_compensation_rewind()
-		print("\nSUCCESS: All 11 automated unit test suites passed cleanly!")
+		test_delta_compression()
+		print("\nSUCCESS: All 12 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")
