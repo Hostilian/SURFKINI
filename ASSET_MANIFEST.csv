@@ -1,0 +1,5 @@
+AssetID,AssetCategory,SourceName,LicenceType,AttributionRequired,Status
+AST-001,StaticMesh,ProceduralSurfRamp,MIT,No,Verified
+AST-002,Audio,WebAudioSynthSound,MIT,No,Verified
+AST-003,Texture,DefaultGridMaterial,MIT,No,Verified
+AST-004,UIFont,InterGoogleFont,OFL-1.1,Yes,Verified
