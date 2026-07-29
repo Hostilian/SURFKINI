@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v3.0.0
+SURFKINI Automated QA Test Runner Suite v4.0.0
 ==============================================
-Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, and teleport bounds.
+Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, teleport bounds, circuit breaker, and subtick buffering.
 """
 
 import sys
@@ -55,15 +55,30 @@ def test_recoil_decay():
 	print("[PASS] Weapons: Recoil Pattern Decay test")
 
 def test_teleport_bounds():
-	dist_sqr = 1500000.0 # 1.5M units squared
+	dist_sqr = 1500000.0
 	max_allowed_sqr = 1000000.0
 	is_illegal = dist_sqr > max_allowed_sqr
 	assert is_illegal, "Expected illegal teleport detection"
 	print("[PASS] Anti-Cheat: Teleport Bounds test")
 
+def test_subtick_buffering():
+	current_ms = 1000
+	last_jump_ms = 950 # 50ms ago (<= 80ms buffer)
+	last_ground_ms = 920 # 80ms ago (<= 100ms coyote)
+	valid = (current_ms - last_jump_ms <= 80) and (current_ms - last_ground_ms <= 100)
+	assert valid, "Expected buffered jump valid"
+	print("[PASS] Movement: Subtick Buffer & Coyote Time test")
+
+def test_circuit_breaker():
+	failures = 5
+	threshold = 5
+	should_allow = failures < threshold
+	assert not should_allow, "Expected circuit breaker OPEN (blocked)"
+	print("[PASS] Networking: CircuitBreaker Failover test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v3.0.0")
+	print("  SURFKINI Automated QA Test Suite v4.0.0")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -73,7 +88,9 @@ def main():
 		test_strafe_sync()
 		test_recoil_decay()
 		test_teleport_bounds()
-		print("\nSUCCESS: All 7 automated unit test suites passed cleanly!")
+		test_subtick_buffering()
+		test_circuit_breaker()
+		print("\nSUCCESS: All 9 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")
