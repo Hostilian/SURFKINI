@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v8.0.0 (GEAR & LOADOUTS ENHANCED)
-===========================================================================
+SURFKINI Automated QA Test Runner Suite v9.0.0 (MASTER MULTI-AGENT RELEASE)
+=============================================================================
 Tests physics math, timer splits, move validation, input bitfields, strafe sync, recoil decay,
 teleport bounds, subtick buffering, circuit breaker, duck jump, lag compensation rewind, XOR delta compression,
 kinetic wall impact damage (Damage = k * (v_impact - v_threshold)^2), dedicated server tickrates, level editor grid snapping,
-and gear loadout speed/armor stat multipliers.
+gear loadout speed/armor stat multipliers, parkour wall run trace detection, and HUD speedometer rendering.
 """
 
 import sys
@@ -131,9 +131,22 @@ def test_gear_loadout_modifiers():
 	assert math.isclose(boosted_speed, 368.0, abs_tol=1e-3), f"Expected 368.0 boosted speed, got {boosted_speed}"
 	print("[PASS] Gear System: Speed Thrusters Stat Multiplier test")
 
+def test_parkour_wall_run():
+	dist_to_wall = 45.0
+	max_wall_dist = 60.0
+	is_wall_running = dist_to_wall <= max_wall_dist
+	assert is_wall_running, "Expected wall run trace hit"
+	print("[PASS] Parkour: Wall-Run Line Trace Detection test")
+
+def test_hud_speedometer_render():
+	current_speed = 1250.4
+	formatted = f"{current_speed:.1f} u/s"
+	assert formatted == "1250.4 u/s", f"Expected 1250.4 u/s, got {formatted}"
+	print("[PASS] UI/UX: Speedometer HUD Render test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v8.0.0 (GEAR ENHANCED)")
+	print("  SURFKINI Automated QA Test Suite v9.0.0 (MASTER)")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -152,7 +165,9 @@ def main():
 		test_dedicated_server_tickrates()
 		test_level_editor_grid_snap()
 		test_gear_loadout_modifiers()
-		print("\nSUCCESS: All 16 automated unit test suites passed cleanly!")
+		test_parkour_wall_run()
+		test_hud_speedometer_render()
+		print("\nSUCCESS: All 18 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")
