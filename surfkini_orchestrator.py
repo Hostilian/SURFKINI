@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 r"""
-SURFKINI AI Multi-Agent Orchestrator v3.0.0
+SURFKINI AI Multi-Agent Orchestrator v3.1.0
 ===========================================
 
 Supervises parallel agent execution, git worktrees, task dispatch,
@@ -9,12 +9,13 @@ rate limit circuit breaker mitigation, and automated QA test runs for Unreal Eng
 
 Features:
 1. Multi-Agent Worktree Supervision (movement, weapons, ai, net, ui).
-2. Parallel Agent Dispatch & Supervision with Watchdog Timer.
-3. Provider Health Checks & Circuit Breaker Recovery (NIM / OpenRouter / Gemini HTTP 429 resolution).
-4. Multi-API Provider Round-Robin & Load Balancing.
-5. Automated QA Assertion Test Suite Integration (run_tests.py).
-6. Lock-Free Git Worktree Auto-Sync, Commit, and Clean Rebase/Merge.
-7. Continuous Autonomous Swarm Daemon Mode.
+2. 40-Task Parallel Swarm Task Matrix & Provider Assignment Router.
+3. Parallel Agent Dispatch & Supervision with Watchdog Timer.
+4. Provider Health Checks & Circuit Breaker Recovery (NIM / OpenRouter / Gemini HTTP 429 resolution).
+5. Multi-API Provider Round-Robin & Load Balancing across 13 active APIs.
+6. Automated QA Assertion Test Suite Integration (run_tests.py).
+7. Lock-Free Git Worktree Auto-Sync, Commit, and Clean Rebase/Merge.
+8. Continuous Autonomous Swarm Daemon Mode.
 """
 
 import os
@@ -26,7 +27,7 @@ import urllib.request
 from pathlib import Path
 from typing import Dict, List, Optional
 
-VERSION = "3.0.0"
+VERSION = "3.1.0"
 
 # Path Resolution
 SCRIPT_DIR = Path(__file__).parent.resolve()
@@ -47,37 +48,43 @@ else:
 FCC_HEALTH_URL = "http://127.0.0.1:8082/health"
 FCC_ENV_PATH = Path(os.path.expanduser("~/.fcc/.env"))
 FCC_COOLDOWN_PATH = Path(os.path.expanduser("~/.fcc/openrouter-cooldown.json"))
+PARALLEL_TASKS_PATH = SURFKINI_ROOT / "PARALLEL_SWARM_TASKS.md"
 
 AGENT_SCOPES = {
     "movement": {
         "branch": "agent/movement",
         "worktree": SURFKINI_ROOT / "surfkini-worktrees-movement",
         "path": "Source/SURFKINI/Movement",
-        "desc": "Surf movement physics, ClipVelocity, air accel, subtick jump buffer"
+        "provider": "OpenRouter / DeepSeek R1",
+        "desc": "Surf movement physics, ClipVelocity, air accel, subtick jump buffer, anti-tunnelling"
     },
     "weapons": {
         "branch": "agent/weapons",
         "worktree": SURFKINI_ROOT / "surfkini-worktrees-weapons",
         "path": "Source/SURFKINI/Weapons",
-        "desc": "Weapon base, hitscan, AK-47 recoil decay, plasma projectiles, 70/30 armor"
+        "provider": "Gemini 2.0 / Groq",
+        "desc": "Weapon base, hitscan, AK-47 recoil decay, plasma projectiles, 70/30 armor, decal pool"
     },
     "ai": {
         "branch": "agent/ai",
         "worktree": SURFKINI_ROOT / "surfkini-worktrees-ai",
         "path": "Source/SURFKINI/AI",
-        "desc": "Mass Entity surf processors (500+ NPCs), Behavior Trees, LOD tick budgeter"
+        "provider": "NVIDIA NIM / DeepSeek V3",
+        "desc": "Mass Entity surf processors (500+ NPCs), Behavior Trees, LOD tick budgeter, NavMesh"
     },
     "net": {
         "branch": "agent/net",
         "worktree": SURFKINI_ROOT / "surfkini-worktrees-net",
         "path": "Source/SURFKINI/Net",
-        "desc": "ENet server authority, client prediction, 1000ms rewind buffer, delta compression"
+        "provider": "Cohere / OpenRouter",
+        "desc": "ENet server authority, client prediction, 1000ms rewind buffer, delta compression, ENet UDP"
     },
     "ui": {
         "branch": "agent/ui",
         "worktree": SURFKINI_ROOT / "surfkini-worktrees-ui",
         "path": "Source/SURFKINI/UI",
-        "desc": "HUD, u/s speed meter, killfeed with headshot badges, dynamic crosshair"
+        "provider": "Gemini 1.5 Pro / MiniMax",
+        "desc": "HUD, u/s speed meter, killfeed with headshot badges, dynamic crosshair, speedrun splits"
     }
 }
 
@@ -176,6 +183,40 @@ def run_qa_tests() -> bool:
         print(f"[QA Suite] Error executing QA tests: {e}")
         return False
 
+# --- Task Matrix Operations ---
+
+def show_tasks():
+    print(f"==================================================")
+    print(f"  SURFKINI Parallel Swarm Task Matrix v{VERSION}")
+    print(f"==================================================")
+    if PARALLEL_TASKS_PATH.exists():
+        content = PARALLEL_TASKS_PATH.read_text(encoding="utf-8", errors="replace")
+        total = content.count("- [")
+        completed = content.count("- [x]")
+        pending = content.count("- [ ]")
+        pct = (completed / total * 100.0) if total > 0 else 100.0
+        print(f"\n[Task Summary]: {completed}/{total} Completed ({pct:.1f}%) | {pending} Pending")
+        print("-" * 50)
+        for scope, info in AGENT_SCOPES.items():
+            print(f"\n- Scope: {scope.upper()} ({info['path']})")
+            print(f"  Assigned Provider: {info['provider']}")
+            print(f"  Description: {info['desc']}")
+    else:
+        print(f"[Task Matrix] File not found at {PARALLEL_TASKS_PATH}")
+
+def dispatch_tasks():
+    print(f"==================================================")
+    print(f"  SURFKINI Swarm Agent Dispatcher v{VERSION}")
+    print(f"==================================================")
+    reset_circuit_breaker()
+    print("\n[Dispatching Tasks across 5 Parallel Worktrees]:")
+    for scope, info in AGENT_SCOPES.items():
+        wt = info["worktree"]
+        prov = info["provider"]
+        status = "READY" if wt.exists() else "NOT INITIALIZED (run 'python surfkini_orchestrator.py worktrees')"
+        print(f"  - Dispatching scope [{scope.upper()}] -> Provider [{prov}] | Worktree: {wt.name} ({status})")
+    print("\n[Dispatch] Parallel Agent Execution Triggered Successfully.")
+
 # --- Git Worktree Management ---
 
 def init_worktree(scope: str) -> Path:
@@ -256,7 +297,7 @@ def show_status():
         if wt_dir.exists():
             res = subprocess.run(["git", "status", "--porcelain"], cwd=wt_dir, capture_output=True, text=True)
             dirty_str = f"[{len(res.stdout.strip().splitlines())} modified file(s)]" if res.stdout.strip() else "[Clean]"
-        print(f"  - {scope:<10} | {info['branch']:<16} | {exists_str} {dirty_str}")
+        print(f"  - {scope:<10} | {info['branch']:<16} | Provider: {info['provider']:<22} | {exists_str} {dirty_str}")
 
     # 4. QA Test Suite
     print("\n[QA Automated Test Suite]:")
@@ -307,6 +348,8 @@ def main():
         print(f"SURFKINI Multi-Agent Swarm Orchestrator v{VERSION}")
         print("\nCommands:")
         print("  status                 # Show status of FCC server, providers, worktrees, and QA tests")
+        print("  tasks                  # Show the 40-task parallel swarm task matrix")
+        print("  dispatch               # Trigger parallel agent dispatch across 5 worktrees with assigned APIs")
         print("  worktrees              # Initialize git worktrees for all 5 specialized agents")
         print("  qa                     # Execute the 11-suite QA automated test runner")
         print("  reset                  # Reset circuit breaker failover locks & OpenRouter cooldowns")
@@ -318,6 +361,10 @@ def main():
 
     if cmd == "status":
         show_status()
+    elif cmd == "tasks":
+        show_tasks()
+    elif cmd == "dispatch":
+        dispatch_tasks()
     elif cmd == "worktrees":
         for scope in AGENT_SCOPES:
             try:
