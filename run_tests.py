@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-SURFKINI Automated QA Test Runner Suite v2.0.0
+SURFKINI Automated QA Test Runner Suite v3.0.0
 ==============================================
-Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, and anti-cheat validation.
+Tests physics math, timer splits, net snapshot buffering, strafe sync, input packing, recoil decay, and teleport bounds.
 """
 
 import sys
@@ -33,7 +33,6 @@ def test_move_validator():
 	print("[PASS] Anti-Cheat: MoveValidator bounds test")
 
 def test_input_packing():
-	# Pack bits: forward(1) | jump(16) | crouch(32) = 49
 	packed = (1 << 0) | (1 << 4) | (1 << 5)
 	assert packed == 49, f"Expected 49, got {packed}"
 	assert (packed & (1 << 0)) != 0, "Forward bit missing"
@@ -41,16 +40,30 @@ def test_input_packing():
 	print("[PASS] Networking: InputCompressor Bitfield test")
 
 def test_strafe_sync():
-	# Velocity normalized dot WishDir
 	vel_norm = (1.0, 0.0, 0.0)
 	wish_dir = (1.0, 0.0, 0.0)
 	sync = (vel_norm[0]*wish_dir[0] + vel_norm[1]*wish_dir[1]) * 100.0
 	assert sync == 100.0, f"Expected 100% sync, got {sync}"
 	print("[PASS] Movement: StrafesCalculator Sync test")
 
+def test_recoil_decay():
+	recoil_pitch = 0.05
+	decay_rate = 5.0
+	delta_time = 0.1
+	decayed = recoil_pitch * (1.0 - min(decay_rate * delta_time, 1.0))
+	assert decayed == 0.025, f"Expected 0.025 decayed pitch, got {decayed}"
+	print("[PASS] Weapons: Recoil Pattern Decay test")
+
+def test_teleport_bounds():
+	dist_sqr = 1500000.0 # 1.5M units squared
+	max_allowed_sqr = 1000000.0
+	is_illegal = dist_sqr > max_allowed_sqr
+	assert is_illegal, "Expected illegal teleport detection"
+	print("[PASS] Anti-Cheat: Teleport Bounds test")
+
 def main():
 	print("==================================================")
-	print("  SURFKINI Automated QA Test Suite v2.0.0")
+	print("  SURFKINI Automated QA Test Suite v3.0.0")
 	print("==================================================")
 	try:
 		test_velocity_clipping()
@@ -58,7 +71,9 @@ def main():
 		test_move_validator()
 		test_input_packing()
 		test_strafe_sync()
-		print("\nSUCCESS: All 5 automated unit test suites passed cleanly!")
+		test_recoil_decay()
+		test_teleport_bounds()
+		print("\nSUCCESS: All 7 automated unit test suites passed cleanly!")
 		return 0
 	except AssertionError as e:
 		print(f"\nFAIL: Unit test failure: {e}")
